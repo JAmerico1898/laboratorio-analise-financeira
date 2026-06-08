@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Especificação — Módulo 15 | Laboratório de Análise de Demonstrações Financeiras</title>
+<style>
+  :root{
+    --ink:#1b2430;--ink-soft:#46586b;--paper:#fbfaf6;--paper-2:#f3f1ea;
+    --line:#dcd7cb;--line-soft:#e8e4da;--accent:#0f5c4a;--accent-soft:#e4efe9;
+    --gold:#9a6b14;--gold-soft:#f5edd9;--ok:#15663f;--ok-bg:#e7f1ea;--no:#9e261c;--no-bg:#f6e6e4;
+    --shadow:0 1px 2px rgba(27,36,48,.06), 0 8px 24px rgba(27,36,48,.05);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    --sans:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:"SFMono-Regular",ui-monospace,"Cascadia Code",Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:radial-gradient(1200px 600px at 85% -10%, var(--accent-soft), transparent 55%),var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:880px;margin:0 auto;padding:0 24px 96px}
+
+  header.doc{padding:64px 0 36px;border-bottom:2px solid var(--ink);margin-bottom:8px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+  header.doc h1{font-family:var(--serif);font-weight:600;font-size:clamp(30px,5vw,46px);line-height:1.08;letter-spacing:-.01em;margin:0 0 10px}
+  header.doc .sub{font-family:var(--serif);font-style:italic;font-size:20px;color:var(--ink-soft);margin:0 0 22px}
+  .meta{display:flex;flex-wrap:wrap;gap:10px;font-family:var(--mono);font-size:12.5px;color:var(--ink-soft)}
+  .meta span{background:var(--paper-2);border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+
+  section{padding:40px 0;border-bottom:1px solid var(--line-soft)}
+  .sec-num{font-family:var(--mono);font-size:13px;color:var(--gold);letter-spacing:.1em}
+  h2{font-family:var(--serif);font-weight:600;font-size:28px;line-height:1.15;margin:6px 0 18px;letter-spacing:-.01em}
+  h3{font-family:var(--serif);font-weight:600;font-size:21px;margin:28px 0 10px}
+  h4{font-family:var(--sans);font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:24px 0 8px}
+  p{margin:0 0 14px}
+  .lead{font-size:17.5px;color:var(--ink-soft)}
+  strong{color:var(--ink)}
+  a{color:var(--accent)}
+
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:var(--shadow);margin:18px 0}
+  .note{background:var(--gold-soft);border:1px solid #e7d9b0;border-left:4px solid var(--gold);border-radius:8px;padding:14px 18px;margin:18px 0;font-size:15px}
+  .note b{color:var(--gold)}
+
+  .scn-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;border-left:4px solid var(--accent);padding-left:16px;margin:8px 0 4px}
+  .badge{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:6px;border:1px solid var(--line);background:var(--paper-2);color:var(--ink-soft);white-space:nowrap}
+  .badge.b-bas{background:#e6eef5;border-color:#c3d4e3;color:#2c5478}
+  .badge.b-int{background:var(--accent-soft);border-color:#bcd9cf;color:var(--accent)}
+  .badge.b-adv{background:var(--gold-soft);border-color:#e7d9b0;color:var(--gold)}
+  .badge.b-sup{background:#efe6f3;border-color:#d6c2e0;color:#6c3a86}
+
+  .step{margin:18px 0}
+  .step-label{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--ink-soft);text-transform:uppercase;margin-bottom:8px}
+  .step-q{font-family:var(--serif);font-size:18px;font-weight:600;margin:0 0 12px}
+  ul.opts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+  ul.opts li{border:1px solid var(--line);border-radius:10px;padding:11px 14px 11px 42px;position:relative;background:#fff;font-size:15px}
+  ul.opts li::before{position:absolute;left:13px;top:11px;font-weight:700;font-size:15px;width:18px;text-align:center}
+  ul.opts li.ok{background:var(--ok-bg);border-color:#bcd9c8}
+  ul.opts li.ok::before{content:"✓";color:var(--ok)}
+  ul.opts li.no{background:var(--no-bg);border-color:#e6c3bf}
+  ul.opts li.no::before{content:"✕";color:var(--no)}
+  ul.opts li .why{display:block;color:var(--ink-soft);font-size:13.5px;margin-top:3px}
+
+  .tbl-wrap{overflow-x:auto;margin:14px 0}
+  table{border-collapse:collapse;width:100%;font-size:14.5px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  th,td{padding:10px 13px;text-align:left;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  thead th{background:var(--ink);color:#fff;font-family:var(--sans);font-weight:600;font-size:12.5px;letter-spacing:.03em}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:nth-child(even){background:var(--paper)}
+  td.k{font-family:var(--mono);font-size:13px}
+  td.num,th.num{font-family:var(--mono);font-size:13px;text-align:right}
+  th.num{font-family:var(--sans)}
+  tr.tot td{font-weight:700;border-top:2px solid var(--line);background:var(--paper-2)}
+  tr.sub td{font-weight:600;color:var(--accent);border-top:1px solid var(--line)}
+  .up{color:var(--no)}
+  .down{color:var(--ok)}
+  .pill{display:inline-block;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:999px;font-weight:600}
+  .pill.s{background:var(--ok-bg);color:var(--ok)}
+  .pill.m{background:var(--gold-soft);color:var(--gold)}
+  .pill.w{background:var(--no-bg);color:var(--no)}
+
+  nav.toc{margin:22px 0 0}
+  nav.toc ol{margin:0;padding-left:20px;columns:2;column-gap:40px;font-size:14.5px}
+  nav.toc li{margin:0 0 6px;break-inside:avoid}
+  nav.toc a{text-decoration:none;color:var(--ink-soft)}
+  nav.toc a:hover{color:var(--accent)}
+
+  pre{background:#11201c;color:#e7f0ec;border-radius:12px;padding:18px 20px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.55;margin:14px 0}
+  pre .c{color:#7fa99a}
+  code{font-family:var(--mono);font-size:.88em;background:var(--paper-2);padding:1px 6px;border-radius:5px}
+  .formula{font-family:var(--mono);font-size:13.5px;background:var(--paper-2);border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:8px 0}
+
+  .report{background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px 28px;box-shadow:var(--shadow);margin:18px 0}
+  .report h3{margin-top:0;border-bottom:1px solid var(--line);padding-bottom:8px}
+  .report .rsec{margin:18px 0}
+  .report .rsec h4{margin:0 0 6px}
+
+  footer.doc{padding:34px 0 0;color:var(--ink-soft);font-size:13.5px;font-family:var(--mono)}
+
+  @media (max-width:620px){nav.toc ol{columns:1}.wrap{padding:0 18px 60px}}
+  @media print{body{background:#fff}.card,table,pre,ul.opts li,.report{box-shadow:none}section{break-inside:avoid-page}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="doc">
+    <p class="eyebrow">Especificação Técnico-Pedagógica · spec_modulo_15.html</p>
+    <h1>Módulo 15 — Estudo de Caso Integrado e Revisão Geral</h1>
+    <p class="sub">Laboratório de Análise de Demonstrações Financeiras · Graduação</p>
+    <div class="meta">
+      <span>Stack: Next.js · TypeScript · Vercel</span>
+      <span>Aula 15 de 15 · 90 min</span>
+      <span>Formato: ESTUDO DE CASO ÚNICO</span>
+      <span>Versão: 1.0 (spec)</span>
+    </div>
+    <nav class="toc" aria-label="Sumário">
+      <ol>
+        <li><a href="#visao">Visão geral (formato especial)</a></li>
+        <li><a href="#caso">O Caso Meridiano (dossiê)</a></li>
+        <li><a href="#motor">Motor de avaliação</a></li>
+        <li><a href="#a1">Ato 1 — Leitura integrada</a></li>
+        <li><a href="#a2">Ato 2 — Riscos e oportunidades</a></li>
+        <li><a href="#a3">Ato 3 — Revisão geral (diagnóstico)</a></li>
+        <li><a href="#a4">Ato 4 — Relatório e recomendação</a></li>
+        <li><a href="#relatorio">O Relatório Final (deliverable)</a></li>
+        <li><a href="#result">ResultPanel</a></li>
+        <li><a href="#dados">Estrutura de dados sugerida</a></li>
+        <li><a href="#revisao">Revisão geral: mapa Aula → Ato</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <!-- ============ 1. VISÃO GERAL ============ -->
+  <section id="visao">
+    <p class="sec-num">01</p>
+    <h2>Visão geral — este módulo é diferente</h2>
+    <p class="lead">Os módulos 1 a 14 trazem quatro cenários independentes. O Módulo 15, não: é <strong>um único estudo de caso</strong> que consolida o curso inteiro. O aluno recebe o dossiê completo de uma empresa nova — a <strong>Meridiano Indústria S.A.</strong> — e conduz uma análise financeira do começo ao fim, organizada em <strong>4 Atos</strong> de uma só narrativa, que culminam num <strong>relatório de análise financeira</strong>.</p>
+
+    <div class="card">
+      <h4 style="margin-top:0">Como o formato muda</h4>
+      <ul style="margin:0;padding-left:20px">
+        <li><strong>Um caso, quatro atos</strong> (não quatro casos): os atos são capítulos da mesma análise e se acumulam.</li>
+        <li><strong>Ato 1 — Leitura integrada</strong> das demonstrações (item 1.1 do enunciado).</li>
+        <li><strong>Ato 2 — Riscos e oportunidades</strong> (item 1.2).</li>
+        <li><strong>Ato 3 — Revisão geral</strong>: o diagnóstico que cruza tudo (item 1.3).</li>
+        <li><strong>Ato 4 — Relatório final e recomendação</strong> (item 1.4).</li>
+        <li>Cada ato mantém a <strong>árvore de decisão</strong> (3 etapas de decisão + 1 resolução), mas as resoluções se somam num <strong>laudo único</strong> ao final.</li>
+      </ul>
+    </div>
+
+    <div class="note">
+      <b>Por que uma empresa nova (Meridiano):</b> a Aurora foi a referência didática e a Fênix a vilã. O caso final pede uma terceira empresa — <em>realista e ambígua</em>, com riscos E oportunidades ao mesmo tempo — para que o aluno exerça julgamento, não reconheça um padrão pronto. A Meridiano cresce em receita (atrai), mas se deteriora por dentro (preocupa).</div>
+
+    <div class="note">
+      <b>Princípio de elaboração das alternativas (crítico):</b> as três opções de cada etapa têm <b>tamanho e estrutura semelhantes</b>. O aluno escolhe pela <b>essência</b>; muitas distratoras são a leitura ingênua ("a receita cresce, logo vai bem") ou extremos (empresa "perfeita"/"falida"). Recomenda-se <b>embaralhar a ordem</b>.</div>
+  </section>
+
+  <!-- ============ 2. O CASO ============ -->
+  <section id="caso">
+    <p class="sec-num">02</p>
+    <h2>O Caso Meridiano (dossiê)</h2>
+    <p>A <strong>Meridiano Indústria S.A.</strong> é uma fabricante de bens de consumo. O aluno recebe duas demonstrações comparativas (Ano Atual = A2, Ano Anterior = A1) e os indicadores derivados. Valores em R$ milhões. Este dossiê fica acessível em todos os atos.</p>
+
+    <h4>Demonstração do Resultado (DRE)</h4>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Linha</th><th class="num">A2 (atual)</th><th class="num">A1 (anterior)</th><th class="num">AH</th></tr></thead>
+      <tbody>
+        <tr><td>Receita líquida</td><td class="num">300</td><td class="num">250</td><td class="num down">+20%</td></tr>
+        <tr><td>(−) CMV</td><td class="num">(198)</td><td class="num">(158)</td><td class="num">+25%</td></tr>
+        <tr class="sub"><td>Lucro bruto</td><td class="num">102</td><td class="num">92</td><td class="num">+11%</td></tr>
+        <tr><td>Margem bruta</td><td class="num up">34,0%</td><td class="num">36,8%</td><td class="num">↓</td></tr>
+        <tr><td>(−) Despesas operacionais</td><td class="num">(66)</td><td class="num">(56)</td><td class="num">+18%</td></tr>
+        <tr class="sub"><td>EBIT</td><td class="num">36</td><td class="num">36</td><td class="num">0%</td></tr>
+        <tr><td>Margem operacional</td><td class="num up">12,0%</td><td class="num">14,4%</td><td class="num">↓</td></tr>
+        <tr><td>(−) Resultado financeiro</td><td class="num up">(16)</td><td class="num">(11)</td><td class="num">+45%</td></tr>
+        <tr><td>LAIR</td><td class="num">20</td><td class="num">25</td><td class="num">−20%</td></tr>
+        <tr><td>(−) IR (30%)</td><td class="num">(6)</td><td class="num">(7,5)</td><td class="num">—</td></tr>
+        <tr class="tot"><td>Lucro líquido</td><td class="num up">14</td><td class="num">17,5</td><td class="num up">−20%</td></tr>
+        <tr><td>↳ inclui ganho não recorrente</td><td class="num up">4</td><td class="num">0</td><td class="num">—</td></tr>
+        <tr class="sub"><td>Lucro recorrente</td><td class="num up">10</td><td class="num">17,5</td><td class="num up">−43%</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h4>Balanço Patrimonial (BP)</h4>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Conta</th><th class="num">A2</th><th class="num">A1</th><th>Conta</th><th class="num">A2</th><th class="num">A1</th></tr></thead>
+      <tbody>
+        <tr><td>Caixa</td><td class="num">12</td><td class="num">20</td><td>Fornecedores</td><td class="num">45</td><td class="num">40</td></tr>
+        <tr><td>Contas a receber</td><td class="num up">75</td><td class="num">50</td><td>Empréstimos CP</td><td class="num">50</td><td class="num">35</td></tr>
+        <tr><td>Estoques</td><td class="num">60</td><td class="num">45</td><td>Outras obrig. CP</td><td class="num">17</td><td class="num">15</td></tr>
+        <tr class="sub"><td>Ativo circulante</td><td class="num">147</td><td class="num">115</td><td>Passivo circulante</td><td class="num">112</td><td class="num">90</td></tr>
+        <tr><td>Imobilizado líq.</td><td class="num">120</td><td class="num">110</td><td>Empréstimos LP</td><td class="num">88</td><td class="num">70</td></tr>
+        <tr><td>Intangível</td><td class="num">13</td><td class="num">15</td><td>Patrimônio líquido</td><td class="num">80</td><td class="num">80</td></tr>
+        <tr class="sub"><td>Ativo não circ.</td><td class="num">133</td><td class="num">125</td><td>—</td><td class="num">—</td><td class="num">—</td></tr>
+        <tr class="tot"><td>Ativo total</td><td class="num">280</td><td class="num">240</td><td>Passivo + PL</td><td class="num">280</td><td class="num">240</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h4>Fluxo de Caixa (DFC, resumo — A2)</h4>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Atividade</th><th class="num">A2</th><th>Observação</th></tr></thead>
+      <tbody>
+        <tr><td>Caixa operacional (FCO)</td><td class="num up">(9)</td><td>Negativo, apesar do lucro de 14</td></tr>
+        <tr><td>Caixa de investimentos (FCI)</td><td class="num">(18)</td><td>Capex, líquido da venda do terreno</td></tr>
+        <tr><td>Caixa de financiamento (FCF)</td><td class="num">+19</td><td>Capta dívida +33; paga dividendos −14</td></tr>
+        <tr class="tot"><td>Variação de caixa</td><td class="num">(8)</td><td>Caixa 20 → 12</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h4>Indicadores derivados</h4>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Dimensão</th><th class="num">A2</th><th class="num">A1</th><th>Tendência</th></tr></thead>
+      <tbody>
+        <tr><td>Liquidez corrente</td><td class="num">1,31</td><td class="num">1,28</td><td>Estável (apertada)</td></tr>
+        <tr><td>Liquidez seca</td><td class="num">0,78</td><td class="num">0,78</td><td>Abaixo de 1</td></tr>
+        <tr><td>Dívida líquida ÷ EBITDA</td><td class="num up">2,52x</td><td class="num">1,77x</td><td>Piorando</td></tr>
+        <tr><td>Cobertura de juros (EBIT)</td><td class="num up">2,25x</td><td class="num">3,27x</td><td>Piorando</td></tr>
+        <tr><td>Margem líquida</td><td class="num up">4,7%</td><td class="num">7,0%</td><td>Caindo</td></tr>
+        <tr><td>Giro do ativo</td><td class="num">1,07</td><td class="num">1,04</td><td>Estável</td></tr>
+        <tr><td>Alavancagem (Ativo ÷ PL)</td><td class="num up">3,5</td><td class="num">3,0</td><td>Subindo</td></tr>
+        <tr><td>ROE (reportado)</td><td class="num">17,5%</td><td class="num">21,9%</td><td>Caindo</td></tr>
+        <tr><td>ROE (recorrente)</td><td class="num up">12,5%</td><td class="num">21,9%</td><td>Caindo forte</td></tr>
+        <tr><td>Accruals (LL − FCO)</td><td class="num up">23</td><td class="num">—</td><td>Altíssimo</td></tr>
+        <tr><td>Payout (dividendos ÷ lucro)</td><td class="num up">100%</td><td class="num">—</td><td>Agressivo</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:13.5px;color:var(--ink-soft)">DuPont A2: ML 4,7% × giro 1,07 × alavancagem 3,5 = 17,5% (ROE sustentado pela alavancagem). Recebíveis +50% vs receita +20%.</p>
+  </section>
+
+  <!-- ============ 3. MOTOR ============ -->
+  <section id="motor">
+    <p class="sec-num">03</p>
+    <h2>Motor de avaliação</h2>
+    <p>Pontuação por <strong>acerto conceitual</strong> em cada etapa dos atos. As resoluções de cada ato são expositivas e não pontuam — elas alimentam o relatório final.</p>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Tipo de resposta</th><th>Pontuação</th><th>Quando aplicar</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Correta</strong></td><td class="k">100% da etapa</td><td>Opção que integra as dimensões e lê o caso com criticidade.</td></tr>
+        <tr><td><strong>Parcialmente aceitável</strong></td><td class="k">50% da etapa</td><td>Leitura defensável, porém incompleta.</td></tr>
+        <tr><td><strong>Incorreta</strong></td><td class="k">0</td><td>Leitura ingênua ("cresce, logo vai bem") ou extremo (empresa perfeita/falida).</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Cada etapa vale <code>100</code> pontos; o ato soma suas etapas; o caso acumula os quatro atos num <strong>score final do curso</strong>. Renderizar opções com <code>shuffle</code>.</p>
+  </section>
+
+  <!-- ============ ATO 1 ============ -->
+  <section id="a1">
+    <p class="sec-num">04</p>
+    <div class="scn-head"><h2 style="margin:0">Ato 1 — Leitura integrada das demonstrações</h2><span class="badge b-int">Intermediário</span></div>
+    <p style="color:var(--ink-soft);margin-top:10px"><em>Item 1.1 · Ler BP, DRE e DFC em conjunto revela o que cada uma esconde sozinha.</em></p>
+
+    <div class="step">
+      <p class="step-label">Etapa 1 — Receita contra lucro (AH)</p>
+      <p class="step-q">A receita subiu +20% (250→300), mas o lucro caiu −20% (17,5→14). O que a análise horizontal revela?</p>
+      <ul class="opts">
+        <li class="ok">Crescimento que não chega ao resultado: as margens se comprimiram no caminho.<span class="why">MB 36,8%→34% e margem op 14,4%→12% explicam a queda.</span></li>
+        <li class="no">Crescimento saudável: receita e lucro evoluíram juntos no mesmo período.<span class="why">Evoluíram em direções opostas — receita sobe, lucro cai.</span></li>
+        <li class="no">Erro de cálculo: receita maior sempre produz lucro maior na mesma proporção.<span class="why">Não há proporção fixa; margem e despesas mudam o resultado.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 2 — O lucro contra o caixa (DFC)</p>
+      <p class="step-q">A Meridiano lucrou R$ 14 mi, mas o FCO foi −R$ 9 mi. O que isso indica?</p>
+      <ul class="opts">
+        <li class="ok">O lucro não virou caixa — a operação consumiu recursos em vez de gerar.<span class="why">Recebíveis e estoques crescendo prenderam o caixa do resultado.</span></li>
+        <li class="no">O lucro virou caixa com folga — FCO negativo é sinal de forte geração.<span class="why">FCO negativo é o oposto de geração: é consumo de caixa.</span></li>
+        <li class="no">O caixa e o lucro são independentes — a comparação não traz informação.<span class="why">A relação lucro × caixa é central para a qualidade do resultado.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 3 — Como o buraco foi tapado (BP)</p>
+      <p class="step-q">Com FCO negativo e investimentos a fazer, como a Meridiano financiou o ano?</p>
+      <ul class="opts">
+        <li class="ok">Captando mais dívida (105 → 138) — a alavancagem subiu para cobrir o caixa.<span class="why">Sem caixa operacional, a empresa recorreu a empréstimos.</span></li>
+        <li class="no">Gerando caixa operacional — o FCO positivo financiou os investimentos.<span class="why">O FCO foi negativo; não havia caixa operacional para investir.</span></li>
+        <li class="no">Reduzindo dividendos — a empresa reteve todo o lucro para se financiar.<span class="why">Ao contrário: distribuiu 100% do lucro (payout 100%).</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 4 — Resolução: as três demonstrações contam uma história só</p>
+      <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:42px"></th><th>Demonstração</th><th>O que revela</th></tr></thead>
+        <tbody>
+          <tr><td class="k">A</td><td>DRE</td><td>Receita +20%, mas lucro −20% (margens comprimidas)</td></tr>
+          <tr><td class="k">B</td><td>DFC</td><td>Lucro 14, mas FCO −9 (a operação consome caixa)</td></tr>
+          <tr><td class="k">C</td><td>BP</td><td>Dívida 105 → 138 tapou o buraco (alavancagem subindo)</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note"><b>Fechamento:</b> isoladas, as demonstrações enganam; <b>juntas, denunciam</b>. A DRE mostra a margem caindo; a DFC, o caixa sumindo; o BP, a dívida crescendo. Esta é a leitura integrada.</div>
+    </div>
+  </section>
+
+  <!-- ============ ATO 2 ============ -->
+  <section id="a2">
+    <p class="sec-num">05</p>
+    <div class="scn-head"><h2 style="margin:0">Ato 2 — Riscos e oportunidades</h2><span class="badge b-int">Intermediário</span></div>
+    <p style="color:var(--ink-soft);margin-top:10px"><em>Item 1.2 · Toda empresa tem os dois lados; a análise separa o que anima do que preocupa.</em></p>
+
+    <div class="step">
+      <p class="step-label">Etapa 1 — A oportunidade</p>
+      <p class="step-q">Qual é a principal oportunidade no caso Meridiano?</p>
+      <ul class="opts">
+        <li class="ok">A demanda: a receita cresce +20%, sinal de mercado aquecido para seus produtos.<span class="why">Topo de linha crescendo é o ativo estratégico a preservar.</span></li>
+        <li class="no">A dívida: o aumento do endividamento mostra acesso fácil e barato a crédito.<span class="why">Mais dívida aqui é risco, não oportunidade — os juros subiram.</span></li>
+        <li class="no">O dividendo: distribuir 100% do lucro atrai investidores em busca de renda.<span class="why">Payout de 100% com caixa negativo é insustentável, não atrativo.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 2 — O risco central</p>
+      <p class="step-q">E o risco mais sério do caso?</p>
+      <ul class="opts">
+        <li class="ok">A combinação margem caindo + caixa negativo + dívida subindo — deterioração financeira.<span class="why">Os três se reforçam: menos margem, menos caixa, mais dívida.</span></li>
+        <li class="no">O crescimento da receita, que pressiona a empresa a investir mais do que deveria.<span class="why">Crescer receita é a oportunidade, não o risco central.</span></li>
+        <li class="no">A liquidez corrente acima de 1, que prende capital desnecessário em ativos.<span class="why">Liquidez 1,31 não é o risco; a seca (0,78) e o caixa, sim.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 3 — O alerta de qualidade do lucro</p>
+      <p class="step-q">Que sinal de alerta de qualidade do lucro aparece no caso?</p>
+      <ul class="opts">
+        <li class="ok">Recebíveis +50% (vs receita +20%) e um ganho não recorrente inflando o lucro.<span class="why">Recebíveis crescendo mais que a receita e lucro com item único: dois flags.</span></li>
+        <li class="no">Estoques estáveis e ausência de itens não recorrentes no resultado do ano.<span class="why">Falso: estoques cresceram +33% e há ganho não recorrente de 4.</span></li>
+        <li class="no">FCO muito acima do lucro, indicando reconhecimento conservador de receita.<span class="why">Invertido: o FCO está bem abaixo do lucro (negativo).</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 4 — Resolução: o balanço de riscos e oportunidades</p>
+      <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:42px"></th><th>Eixo</th><th>Achado</th><th style="width:90px"></th></tr></thead>
+        <tbody>
+          <tr><td class="k">A</td><td>Oportunidade</td><td>Receita +20% — demanda aquecida</td><td><span class="pill s">positivo</span></td></tr>
+          <tr><td class="k">B</td><td>Risco</td><td>Margem ↓, FCO negativo, dívida ↑, cobertura 2,25x</td><td><span class="pill w">grave</span></td></tr>
+          <tr><td class="k">C</td><td>Qualidade</td><td>Recebíveis +50%, ganho não recorrente 4 (core = 10)</td><td><span class="pill w">alerta</span></td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note"><b>Fechamento:</b> a Meridiano cresce, mas o crescimento está <b>destruindo, não criando</b>, saúde financeira. A oportunidade é real; os riscos, maiores.</div>
+    </div>
+  </section>
+
+  <!-- ============ ATO 3 ============ -->
+  <section id="a3">
+    <p class="sec-num">06</p>
+    <div class="scn-head"><h2 style="margin:0">Ato 3 — Revisão geral: o diagnóstico integrado</h2><span class="badge b-adv">Avançado</span></div>
+    <p style="color:var(--ink-soft);margin-top:10px"><em>Item 1.3 · Cruzar DuPont, endividamento e qualidade revela a verdade por trás do ROE.</em></p>
+
+    <div class="step">
+      <p class="step-label">Etapa 1 — O ROE enganoso (DuPont)</p>
+      <p class="step-q">O ROE da Meridiano é 17,5% — parece bom. O DuPont desfaz a ilusão. Como?</p>
+      <ul class="opts">
+        <li class="ok">O ROE se sustenta na alavancagem crescente (3,0 → 3,5), não na eficiência operacional.<span class="why">Margem e ROA caem; o ROE só não desaba porque a dívida subiu.</span></li>
+        <li class="no">O ROE se sustenta na margem, que cresceu e impulsionou o retorno do sócio.<span class="why">Falso: a margem líquida caiu de 7% para 4,7%.</span></li>
+        <li class="no">O ROE se sustenta no giro, que disparou e multiplicou o retorno do ativo.<span class="why">O giro ficou quase estável (1,04 → 1,07); não explica o ROE.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 2 — O ROE recorrente</p>
+      <p class="step-q">Removendo o ganho não recorrente, o lucro cai de 14 para 10. O que acontece com o ROE?</p>
+      <ul class="opts">
+        <li class="ok">Cai para 12,5% — e, com margem e cobertura piorando, a tendência é de mais queda.<span class="why">10 ÷ 80 = 12,5%: o retorno "de verdade" é bem menor que o de capa.</span></li>
+        <li class="no">Sobe para 21% — o lucro recorrente é sempre maior que o lucro reportado.<span class="why">O recorrente é menor: removeu-se um ganho, não se adicionou.</span></li>
+        <li class="no">Não muda — itens não recorrentes não afetam o cálculo do ROE.<span class="why">Afetam: o lucro muda, e o ROE é lucro sobre PL.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 3 — A sustentabilidade</p>
+      <p class="step-q">A Meridiano distribuiu 100% do lucro (payout 100%). Isso é sustentável aqui?</p>
+      <ul class="opts">
+        <li class="ok">Não: distribuir tudo enquanto o FCO é negativo e a dívida sobe é insustentável.<span class="why">Paga dividendos com dinheiro de empréstimo — corrói o capital.</span></li>
+        <li class="no">Sim: distribuir todo o lucro é sempre o uso mais eficiente do resultado.<span class="why">Não há "sempre"; depende da geração de caixa, aqui negativa.</span></li>
+        <li class="no">Depende só do setor: o payout não tem relação com a geração de caixa.<span class="why">Tem relação direta: paga-se dividendo com caixa, não com lucro contábil.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 4 — Resolução: o diagnóstico integrado</p>
+      <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:42px"></th><th>Lente</th><th>Veredito</th></tr></thead>
+        <tbody>
+          <tr><td class="k">A</td><td>DuPont</td><td>ROE 17,5% sustentado por alavancagem 3,5 (não por eficiência)</td></tr>
+          <tr><td class="k">B</td><td>Recorrência</td><td>ROE recorrente 12,5% e em queda</td></tr>
+          <tr><td class="k">C</td><td>Sustentabilidade</td><td>Payout 100% com FCO negativo e dívida ↑ = insustentável</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note"><b>Fechamento:</b> a revisão geral cruza tudo. O ROE de capa é uma <b>miragem</b>: vem de mais dívida e de um ganho único, não da operação. Por baixo, a empresa se enfraquece.</div>
+    </div>
+  </section>
+
+  <!-- ============ ATO 4 ============ -->
+  <section id="a4">
+    <p class="sec-num">07</p>
+    <div class="scn-head"><h2 style="margin:0">Ato 4 — Relatório final e recomendação</h2><span class="badge b-sup">Super Desafio</span></div>
+    <p style="color:var(--ink-soft);margin-top:10px"><em>Item 1.4 · O analista converte o diagnóstico em recomendação fundamentada — que depende de quem pergunta.</em></p>
+
+    <div class="step">
+      <p class="step-label">Etapa 1 — Recomendação de crédito</p>
+      <p class="step-q">Como analista de crédito (empréstimo de longo prazo), qual a recomendação?</p>
+      <ul class="opts">
+        <li class="ok">Negar ou condicionar fortemente: cobertura caindo (2,25x), FCO negativo e dívida subindo.<span class="why">A capacidade de pagar se deteriora justamente quando se pede mais dívida.</span></li>
+        <li class="no">Conceder sem ressalvas: a receita crescente garante o pagamento do empréstimo.<span class="why">Receita não paga dívida; caixa paga — e o FCO é negativo.</span></li>
+        <li class="no">Conceder pelo ROE alto: 17,5% de retorno sinaliza folga para honrar a dívida.<span class="why">O ROE é do sócio e está inflado por alavancagem e item único.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 2 — Recomendação de investimento</p>
+      <p class="step-q">Como analista de investimento, qual a recomendação?</p>
+      <ul class="opts">
+        <li class="ok">Não investir agora: o retorno de capa esconde margem caindo, caixa negativo e lucro de baixa qualidade.<span class="why">O ROE recorrente (12,5%) e a tendência negativa não compensam o risco.</span></li>
+        <li class="no">Investir pelo crescimento: receita +20% garante a valorização das ações.<span class="why">Crescimento que não vira caixa nem lucro recorrente não cria valor.</span></li>
+        <li class="no">Investir pelo dividendo: o payout de 100% assegura renda alta e estável.<span class="why">Dividendo pago com dívida não é estável; é uma bandeira vermelha.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 3 — A frase-síntese do relatório</p>
+      <p class="step-q">Qual a conclusão mais honesta para o relatório?</p>
+      <ul class="opts">
+        <li class="ok">"Crescimento de receita que não cria valor: margem, caixa e endividamento pioram."<span class="why">Captura a tese central do caso sem exagero para nenhum lado.</span></li>
+        <li class="no">"Empresa em franca expansão e plena saúde financeira, sem pontos de atenção."<span class="why">Otimista demais: ignora caixa, margem e alavancagem.</span></li>
+        <li class="no">"Empresa falida e sem operação, recomendada apenas para liquidação imediata."<span class="why">Pessimista demais: a empresa opera, vende e gera EBIT.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 4 — Resolução: a recomendação consolidada</p>
+      <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:42px"></th><th>Decisor</th><th>Recomendação</th><th style="width:90px"></th></tr></thead>
+        <tbody>
+          <tr><td class="k">A</td><td>Crédito</td><td>Negar / condicionar: capacidade de pagar deteriorando</td><td><span class="pill w">não</span></td></tr>
+          <tr><td class="k">B</td><td>Investimento</td><td>Não investir: retorno de capa, qualidade baixa</td><td><span class="pill w">não</span></td></tr>
+          <tr><td class="k">C</td><td>Síntese</td><td>Crescimento que não cria valor — monitorar margem e caixa</td><td><span class="pill m">tese</span></td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note"><b>Fechamento:</b> este é o produto final do analista — e do curso. Um relatório que parte das demonstrações, atravessa todas as dimensões, separa risco de oportunidade e termina numa <b>recomendação clara</b>, ciente de para quem ela é dada.</div>
+    </div>
+  </section>
+
+  <!-- ============ 8. RELATÓRIO FINAL ============ -->
+  <section id="relatorio">
+    <p class="sec-num">08</p>
+    <h2>O Relatório Final (deliverable do módulo)</h2>
+    <p>O grande diferencial do Módulo 15: ao concluir os quatro atos, o app <strong>compila as respostas do aluno num relatório de análise financeira</strong>. As resoluções dos atos preenchem as seções. O aluno pode revisar, exportar (PDF) e — idealmente — editar as conclusões. Estrutura sugerida:</p>
+
+    <div class="report">
+      <h3>Relatório de Análise Financeira — Meridiano Indústria S.A.</h3>
+      <div class="rsec"><h4>1. Sumário executivo</h4><p style="margin:0;font-size:14.5px;color:var(--ink-soft)">Tese em 1–2 frases (vem da frase-síntese do Ato 4). Ex.: "Crescimento de receita que não cria valor; margem, caixa e endividamento em deterioração."</p></div>
+      <div class="rsec"><h4>2. Análise integrada das demonstrações</h4><p style="margin:0;font-size:14.5px;color:var(--ink-soft)">Síntese do Ato 1: DRE (margens), DFC (caixa), BP (dívida) lidos em conjunto.</p></div>
+      <div class="rsec"><h4>3. Diagnóstico por dimensão</h4><p style="margin:0;font-size:14.5px;color:var(--ink-soft)">Liquidez · Endividamento · Rentabilidade (DuPont) · Qualidade do lucro · Crescimento (real × nominal). Vem dos Atos 1 e 3.</p></div>
+      <div class="rsec"><h4>4. Riscos e oportunidades</h4><p style="margin:0;font-size:14.5px;color:var(--ink-soft)">Tabela de dois lados (Ato 2): oportunidade (demanda) × riscos (margem, caixa, dívida, qualidade).</p></div>
+      <div class="rsec"><h4>5. Recomendação</h4><p style="margin:0;font-size:14.5px;color:var(--ink-soft)">Crédito e investimento separados (Ato 4), cada um com sua justificativa e condicionantes.</p></div>
+    </div>
+    <div class="note"><b>Implementação:</b> o relatório é um componente que lê o estado das respostas dos quatro atos e renderiza cada seção. Botão "Exportar PDF" usa <code>print()</code> com CSS de impressão. Opcional: permitir que o aluno escreva sua própria conclusão e comparar com a "conclusão de referência".</div>
+  </section>
+
+  <!-- ============ 9. RESULT PANEL ============ -->
+  <section id="result">
+    <p class="sec-num">09</p>
+    <h2>ResultPanel</h2>
+    <ul style="padding-left:20px">
+      <li><strong>Score final do curso</strong> (soma dos quatro atos), com selo de conclusão (ex.: "Analista Financeiro — Certificado do Laboratório").</li>
+      <li><strong>Relatório compilado</strong> (seção 08) como entregável principal.</li>
+      <li><strong>Explicação didática</strong> de cada etapa, retomando o indicador do dossiê que a fundamenta.</li>
+      <li><strong>Mapa de revisão</strong> (seção 11): mostra quais aulas o aluno acabou de aplicar em cada ato.</li>
+    </ul>
+    <div class="note"><b>Visual opcional (leve):</b> um <b>dashboard do caso</b> reunindo, numa só tela, o gráfico receita × lucro × FCO (três linhas), o radar de 5 dimensões e a "tesoura" lucro × caixa — o retrato visual do diagnóstico. Pode usar <code>Recharts</code>; não é obrigatório.</div>
+  </section>
+
+  <!-- ============ 10. ESTRUTURA DE DADOS ============ -->
+  <section id="dados">
+    <p class="sec-num">10</p>
+    <h2>Estrutura de dados sugerida</h2>
+<pre><span class="c">// data/modulo15.ts — caso único em 4 atos</span>
+const meridiano = {
+  dre: { receita:[250,300], cmv:[158,198], ebit:[36,36],
+         resultFin:[11,16], lucro:[17.5,14], naoRecorrente:[0,4], recorrente:[17.5,10] },
+  bp:  { ativoTotal:[240,280], pl:[80,80], dividaOnerosa:[105,138],
+         caixa:[20,12], recebiveis:[50,75], estoques:[45,60] },
+  dfc: { fco:-9, fci:-18, fcf:19, varCaixa:-8 },
+  ind: { liqCorrente:[1.28,1.31], liqSeca:[0.78,0.78],
+         dividaEbitda:[1.77,2.52], cobertura:[3.27,2.25],
+         margemLiq:[0.07,0.047], giro:[1.04,1.07], alavancagem:[3.0,3.5],
+         roe:[0.219,0.175], roeRecorrente:0.125, accruals:23, payout:1.0 },
+};
+
+<span class="c">// O caso é UMA estrutura; os atos referenciam o mesmo objeto.</span>
+type Ato = { id:1|2|3|4; titulo:string; steps:Step[]; resolucao:Linha[] };
+<span class="c">// O relatório final lê as respostas dos 4 atos e preenche as seções.</span>
+type Relatorio = { sumario:string; integrada:string; dimensoes:Dim[];
+                   riscos:string[]; oportunidades:string[]; recomendacao:{credito,invest} };
+
+<span class="c">// Scenario/Step/Option reaproveitam os tipos dos módulos 1–14.</span></pre>
+  </section>
+
+  <!-- ============ 11. REVISÃO GERAL ============ -->
+  <section id="revisao" style="border-bottom:none">
+    <p class="sec-num">11</p>
+    <h2>Revisão geral: mapa Aula → Ato</h2>
+    <p>O componente de "revisão geral" torna explícito que o caso mobiliza o curso inteiro. Exibir como checklist que se acende conforme o aluno avança nos atos.</p>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Aula</th><th>Competência</th><th>Onde é aplicada no caso</th></tr></thead>
+      <tbody>
+        <tr><td class="k">1</td><td>Usuários da informação</td><td>Ato 4 (crédito × investimento)</td></tr>
+        <tr><td class="k">2</td><td>Estrutura das demonstrações</td><td>Ato 1 (ler BP/DRE/DFC)</td></tr>
+        <tr><td class="k">3</td><td>Qualidade da informação</td><td>Ato 2 (não recorrente, estimativas)</td></tr>
+        <tr><td class="k">4</td><td>Balanço Patrimonial</td><td>Ato 1 e 3 (estrutura, capital de giro)</td></tr>
+        <tr><td class="k">5</td><td>DRE e margens</td><td>Ato 1 e 2 (margens comprimindo)</td></tr>
+        <tr><td class="k">6</td><td>DFC (lucro × caixa)</td><td>Ato 1 (FCO negativo)</td></tr>
+        <tr><td class="k">7</td><td>Análise horizontal e vertical</td><td>Ato 1 (receita × lucro)</td></tr>
+        <tr><td class="k">8</td><td>Liquidez e capital de giro</td><td>Ato 2 e 3 (seca 0,78, recebíveis)</td></tr>
+        <tr><td class="k">9</td><td>Endividamento e alavancagem</td><td>Ato 2 e 3 (cobertura, dívida ↑)</td></tr>
+        <tr><td class="k">10–11</td><td>Rentabilidade e DuPont</td><td>Ato 3 (ROE sustentado por alavancagem)</td></tr>
+        <tr><td class="k">12</td><td>Benchmarking e intertemporal</td><td>Ato 1 e 3 (A2 × A1, real × nominal)</td></tr>
+        <tr><td class="k">13</td><td>Qualidade do lucro e alertas</td><td>Ato 2 e 3 (accruals, recebíveis, recorrência)</td></tr>
+        <tr><td class="k">14</td><td>Análise para decisão</td><td>Ato 4 (relatório e recomendação)</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="note"><b>Fechamento do curso:</b> o aluno começou aprendendo quem lê as demonstrações (Aula 1) e termina escrevendo um relatório que decide a partir delas (Aula 15). O Laboratório completa o arco: das peças isoladas ao analista que as integra.</div>
+  </section>
+
+  <footer class="doc">
+    spec_modulo_15.html · Laboratório de Análise de Demonstrações Financeiras · Aula 15 — Estudo de Caso Integrado e Revisão Geral
+  </footer>
+
+</div>
+</body>
+</html>

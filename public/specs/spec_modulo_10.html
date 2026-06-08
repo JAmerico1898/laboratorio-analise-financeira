@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Especificação — Módulo 10 | Laboratório de Análise de Demonstrações Financeiras</title>
+<style>
+  :root{
+    --ink:#1b2430;--ink-soft:#46586b;--paper:#fbfaf6;--paper-2:#f3f1ea;
+    --line:#dcd7cb;--line-soft:#e8e4da;--accent:#0f5c4a;--accent-soft:#e4efe9;
+    --gold:#9a6b14;--gold-soft:#f5edd9;--ok:#15663f;--ok-bg:#e7f1ea;--no:#9e261c;--no-bg:#f6e6e4;
+    --shadow:0 1px 2px rgba(27,36,48,.06), 0 8px 24px rgba(27,36,48,.05);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    --sans:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:"SFMono-Regular",ui-monospace,"Cascadia Code",Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:radial-gradient(1200px 600px at 85% -10%, var(--accent-soft), transparent 55%),var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:880px;margin:0 auto;padding:0 24px 96px}
+
+  header.doc{padding:64px 0 36px;border-bottom:2px solid var(--ink);margin-bottom:8px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+  header.doc h1{font-family:var(--serif);font-weight:600;font-size:clamp(30px,5vw,46px);line-height:1.08;letter-spacing:-.01em;margin:0 0 10px}
+  header.doc .sub{font-family:var(--serif);font-style:italic;font-size:20px;color:var(--ink-soft);margin:0 0 22px}
+  .meta{display:flex;flex-wrap:wrap;gap:10px;font-family:var(--mono);font-size:12.5px;color:var(--ink-soft)}
+  .meta span{background:var(--paper-2);border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+
+  section{padding:40px 0;border-bottom:1px solid var(--line-soft)}
+  .sec-num{font-family:var(--mono);font-size:13px;color:var(--gold);letter-spacing:.1em}
+  h2{font-family:var(--serif);font-weight:600;font-size:28px;line-height:1.15;margin:6px 0 18px;letter-spacing:-.01em}
+  h3{font-family:var(--serif);font-weight:600;font-size:21px;margin:28px 0 10px}
+  h4{font-family:var(--sans);font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:24px 0 8px}
+  p{margin:0 0 14px}
+  .lead{font-size:17.5px;color:var(--ink-soft)}
+  strong{color:var(--ink)}
+  a{color:var(--accent)}
+
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:var(--shadow);margin:18px 0}
+  .note{background:var(--gold-soft);border:1px solid #e7d9b0;border-left:4px solid var(--gold);border-radius:8px;padding:14px 18px;margin:18px 0;font-size:15px}
+  .note b{color:var(--gold)}
+
+  .scn-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;border-left:4px solid var(--accent);padding-left:16px;margin:8px 0 4px}
+  .badge{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:6px;border:1px solid var(--line);background:var(--paper-2);color:var(--ink-soft);white-space:nowrap}
+  .badge.b-bas{background:#e6eef5;border-color:#c3d4e3;color:#2c5478}
+  .badge.b-int{background:var(--accent-soft);border-color:#bcd9cf;color:var(--accent)}
+  .badge.b-adv{background:var(--gold-soft);border-color:#e7d9b0;color:var(--gold)}
+  .badge.b-sup{background:#efe6f3;border-color:#d6c2e0;color:#6c3a86}
+
+  .step{margin:18px 0}
+  .step-label{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--ink-soft);text-transform:uppercase;margin-bottom:8px}
+  .step-q{font-family:var(--serif);font-size:18px;font-weight:600;margin:0 0 12px}
+  ul.opts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+  ul.opts li{border:1px solid var(--line);border-radius:10px;padding:11px 14px 11px 42px;position:relative;background:#fff;font-size:15px}
+  ul.opts li::before{position:absolute;left:13px;top:11px;font-weight:700;font-size:15px;width:18px;text-align:center}
+  ul.opts li.ok{background:var(--ok-bg);border-color:#bcd9c8}
+  ul.opts li.ok::before{content:"✓";color:var(--ok)}
+  ul.opts li.no{background:var(--no-bg);border-color:#e6c3bf}
+  ul.opts li.no::before{content:"✕";color:var(--no)}
+  ul.opts li .why{display:block;color:var(--ink-soft);font-size:13.5px;margin-top:3px}
+
+  .tbl-wrap{overflow-x:auto;margin:14px 0}
+  table{border-collapse:collapse;width:100%;font-size:14.5px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  th,td{padding:10px 13px;text-align:left;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  thead th{background:var(--ink);color:#fff;font-family:var(--sans);font-weight:600;font-size:12.5px;letter-spacing:.03em}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:nth-child(even){background:var(--paper)}
+  td.k{font-family:var(--mono);font-size:13px}
+  td.num,th.num{font-family:var(--mono);font-size:13px;text-align:right}
+  th.num{font-family:var(--sans)}
+  tr.tot td{font-weight:700;border-top:2px solid var(--line);background:var(--paper-2)}
+  tr.sub td{font-weight:600;color:var(--accent);border-top:1px solid var(--line)}
+  .up{color:var(--no)}
+  .down{color:var(--ok)}
+  .pill{display:inline-block;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:999px;font-weight:600}
+  .pill.s{background:var(--ok-bg);color:var(--ok)}
+  .pill.m{background:var(--gold-soft);color:var(--gold)}
+  .pill.w{background:var(--no-bg);color:var(--no)}
+
+  nav.toc{margin:22px 0 0}
+  nav.toc ol{margin:0;padding-left:20px;columns:2;column-gap:40px;font-size:14.5px}
+  nav.toc li{margin:0 0 6px;break-inside:avoid}
+  nav.toc a{text-decoration:none;color:var(--ink-soft)}
+  nav.toc a:hover{color:var(--accent)}
+
+  pre{background:#11201c;color:#e7f0ec;border-radius:12px;padding:18px 20px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.55;margin:14px 0}
+  pre .c{color:#7fa99a}
+  code{font-family:var(--mono);font-size:.88em;background:var(--paper-2);padding:1px 6px;border-radius:5px}
+  .formula{font-family:var(--mono);font-size:13.5px;background:var(--paper-2);border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:8px 0}
+
+  footer.doc{padding:34px 0 0;color:var(--ink-soft);font-size:13.5px;font-family:var(--mono)}
+
+  @media (max-width:620px){nav.toc ol{columns:1}.wrap{padding:0 18px 60px}}
+  @media print{body{background:#fff}.card,table,pre,ul.opts li{box-shadow:none}section{break-inside:avoid-page}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="doc">
+    <p class="eyebrow">Especificação Técnico-Pedagógica · spec_modulo_10.html</p>
+    <h1>Módulo 10 — Análise de Rentabilidade e Retorno</h1>
+    <p class="sub">Laboratório de Análise de Demonstrações Financeiras · Graduação</p>
+    <div class="meta">
+      <span>Stack: Next.js · TypeScript · Vercel</span>
+      <span>Aula 10 de 15 · 90 min</span>
+      <span>Público: graduandos sem experiência prévia</span>
+      <span>Versão: 1.0 (spec)</span>
+    </div>
+    <nav class="toc" aria-label="Sumário">
+      <ol>
+        <li><a href="#visao">Visão geral e estrutura</a></li>
+        <li><a href="#dataset">Dados-base: rentabilidade e DuPont</a></li>
+        <li><a href="#motor">Motor de avaliação</a></li>
+        <li><a href="#c1">Cenário 1 — Eficiência econômica</a></li>
+        <li><a href="#c2">Cenário 2 — Lucro, ativos e capital</a></li>
+        <li><a href="#c3">Cenário 3 — Mesmo ROE, histórias diferentes</a></li>
+        <li><a href="#c4">Cenário 4 — A fórmula DuPont</a></li>
+        <li><a href="#result">ResultPanel</a></li>
+        <li><a href="#nav">Navegação e gamificação</a></li>
+        <li><a href="#dados">Estrutura de dados sugerida</a></li>
+        <li><a href="#resumo">Resumo dos cenários</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <!-- ============ 1. VISÃO GERAL ============ -->
+  <section id="visao">
+    <p class="sec-num">01</p>
+    <h2>Visão geral e estrutura</h2>
+    <p class="lead">O Módulo 10 responde à pergunta que o investidor mais faz: <strong>vale a pena?</strong>. O aluno aprende que rentabilidade é eficiência (lucro por real de capital), relaciona lucro com ativos (ROA) e com capital próprio (ROE), descobre que <strong>dois ROEs iguais podem esconder histórias opostas</strong> e fecha com a <strong>fórmula DuPont</strong>, que abre o retorno em margem, giro e alavancagem. Usa a <strong>Comercial Aurora S.A.</strong> e duas empresas de comparação.</p>
+
+    <div class="card">
+      <h4 style="margin-top:0">Estrutura do módulo</h4>
+      <ul style="margin:0;padding-left:20px">
+        <li><strong>4 cenários</strong>, um por exercício da Aula 10: 2 Intermediários, 1 Avançado e 1 Super Desafio.</li>
+        <li><strong>Árvore de decisão</strong> em 4 etapas por cenário (3 etapas de decisão + 1 etapa de resolução).</li>
+        <li><strong>3 ramificações</strong> em cada etapa: 1 correta e 2 distratoras plausíveis.</li>
+        <li><strong>3 cenários distintos</strong> na resolução final (A, B, C).</li>
+        <li><strong>ResultPanel</strong> com feedback, explicação didática e contrafactual.</li>
+      </ul>
+    </div>
+
+    <div class="note">
+      <b>Conexão com a Aula 9:</b> o módulo costura a alavancagem (Aula 9) à rentabilidade. O ROE é maior que o ROA <em>por causa</em> da alavancagem — e o Cenário 3 mostra que um ROE alto vindo de dívida não tem a mesma qualidade de um vindo de eficiência. A fórmula DuPont (Cenário 4) torna isso explícito.</div>
+
+    <div class="note">
+      <b>Princípio de elaboração das alternativas (crítico):</b> as três opções de cada etapa têm <b>tamanho e estrutura semelhantes</b>, frequentemente com o mesmo início. O aluno escolhe pela <b>essência</b>, não pela forma; várias distratoras trocam a base (ativo × PL × receita) ou o fator (margem × giro × alavancagem). Recomenda-se <b>embaralhar a ordem</b> na renderização.</div>
+
+    <h4>Mapa Exercício → Cenário</h4>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:42px">#</th><th>Exercício da Aula 10</th><th>Cenário do módulo</th><th style="width:130px">Dificuldade</th></tr></thead>
+      <tbody>
+        <tr><td class="k">1</td><td>Avaliação da eficiência econômica</td><td>Eficiência econômica</td><td><span class="badge b-int">Intermediário</span></td></tr>
+        <tr><td class="k">2</td><td>Relacionar lucro, ativos e capital</td><td>Lucro, ativos e capital</td><td><span class="badge b-int">Intermediário</span></td></tr>
+        <tr><td class="k">3</td><td>Comparar duas empresas com ROE semelhante, interpretação diferente</td><td>Mesmo ROE, histórias diferentes</td><td><span class="badge b-adv">Avançado</span></td></tr>
+        <tr><td class="k">4</td><td>Relações entre ROA, ROE, margem e giro</td><td>A fórmula DuPont</td><td><span class="badge b-sup">Super Desafio</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <!-- ============ 2. DATASET ============ -->
+  <section id="dataset">
+    <p class="sec-num">02</p>
+    <h2>Dados-base: rentabilidade e DuPont</h2>
+    <p>Reaproveita a DRE (Módulo 5) e o balanço (Módulo 4) da <strong>Comercial Aurora S.A.</strong>, em R$ milhões.</p>
+
+    <h4>Indicadores de rentabilidade da Aurora</h4>
+    <div class="formula">Margem líquida = LL ÷ Receita = 4 ÷ 50 = <b>8%</b>  ·  Giro do ativo = Receita ÷ Ativo = 50 ÷ 80 = <b>0,625</b></div>
+    <div class="formula">ROA = LL ÷ Ativo = 4 ÷ 80 = <b>5%</b>  (= margem × giro = 8% × 0,625)</div>
+    <div class="formula">Multiplicador de alavancagem = Ativo ÷ PL = 80 ÷ 30 = <b>2,67</b></div>
+    <div class="formula">ROE = LL ÷ PL = 4 ÷ 30 = <b>13,3%</b>  (= ROA × multiplicador = 5% × 2,67)</div>
+    <div class="formula"><b>DuPont:</b> ROE = Margem × Giro × Alavancagem = 8% × 0,625 × 2,67 = <b>13,3%</b></div>
+
+    <h4>Comparação "mesmo ROE" (usada no Cenário 3)</h4>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Fator</th><th class="num">Empresa Sólida</th><th class="num">Empresa Alavancada</th></tr></thead>
+      <tbody>
+        <tr><td>Margem líquida</td><td class="num">10%</td><td class="num">5%</td></tr>
+        <tr><td>Giro do ativo</td><td class="num">1,0</td><td class="num">1,0</td></tr>
+        <tr class="sub"><td>ROA (margem × giro)</td><td class="num">10%</td><td class="num">5%</td></tr>
+        <tr><td>Multiplicador (Ativo ÷ PL)</td><td class="num">1,5</td><td class="num up">3,0</td></tr>
+        <tr class="tot"><td>ROE</td><td class="num">15%</td><td class="num">15%</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h4>Trade-off margem × giro (usado no Cenário 4)</h4>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Modelo</th><th class="num">Margem</th><th class="num">Giro</th><th class="num">ROA</th></tr></thead>
+      <tbody>
+        <tr><td>Joalheria (margem alta, giro baixo)</td><td class="num">20%</td><td class="num">0,5</td><td class="num">10%</td></tr>
+        <tr><td>Supermercado (margem baixa, giro alto)</td><td class="num">2%</td><td class="num">5,0</td><td class="num">10%</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <!-- ============ 3. MOTOR DE AVALIAÇÃO ============ -->
+  <section id="motor">
+    <p class="sec-num">03</p>
+    <h2>Motor de avaliação</h2>
+    <p>Pontuação por <strong>acerto conceitual</strong> em cada etapa de decisão. A Etapa 4 (resolução) é expositiva e não pontua. Os índices vêm pré-computados — o aluno interpreta e decompõe.</p>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Tipo de resposta</th><th>Pontuação</th><th>Quando aplicar</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Correta</strong></td><td class="k">100% da etapa</td><td>Opção que identifica corretamente a base, o fator ou a fonte do retorno.</td></tr>
+        <tr><td><strong>Parcialmente aceitável</strong></td><td class="k">50% da etapa</td><td>Opção defensável, porém incompleta (uso pontual).</td></tr>
+        <tr><td><strong>Incorreta</strong></td><td class="k">0</td><td>Opção que troca a base (ativo/PL/receita) ou o fator (margem/giro/alavancagem).</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Cada etapa vale <code>100</code> pontos; o score do cenário soma as etapas; o total acumula entre os 4 cenários. Renderizar opções com <code>shuffle</code>.</p>
+  </section>
+
+  <!-- ============ CENÁRIO 1 ============ -->
+  <section id="c1">
+    <p class="sec-num">04</p>
+    <div class="scn-head"><h2 style="margin:0">Cenário 1 — Eficiência econômica</h2><span class="badge b-int">Intermediário</span></div>
+    <p style="color:var(--ink-soft);margin-top:10px"><em>Conceito-chave: rentabilidade é eficiência — lucro por real de capital — e não o tamanho do lucro.</em></p>
+
+    <h4>Contexto</h4>
+    <p>A Aurora lucrou R$ 4 mi. Mas isso é "bom"? Depende de quanto capital foi preciso para gerar esse lucro. O aluno aprende a ver o retorno como <strong>eficiência</strong>, não valor absoluto.</p>
+
+    <div class="step">
+      <p class="step-label">Etapa 1 — Lucro absoluto não basta</p>
+      <p class="step-q">A Aurora lucrou R$ 4 mi. Isso basta para dizer que ela é eficiente?</p>
+      <ul class="opts">
+        <li class="ok">Não: é preciso comparar o lucro ao capital empregado para gerá-lo.<span class="why">R$ 4 mi com R$ 30 mi de capital é diferente de R$ 4 mi com R$ 300 mi.</span></li>
+        <li class="no">Sim: um lucro positivo já indica, por si só, eficiência econômica da empresa.<span class="why">Lucrar não diz se o capital foi bem usado.</span></li>
+        <li class="no">Não: o lucro só faz sentido quando comparado à receita total do período.<span class="why">Isso é a margem — uma parte da história, não a eficiência do capital.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 2 — O que é "retorno"</p>
+      <p class="step-q">O que um índice de retorno (como ROA ou ROE) expressa?</p>
+      <ul class="opts">
+        <li class="ok">Quanto de lucro a empresa gera para cada real de capital aplicado.<span class="why">É a eficiência de transformar capital em resultado.</span></li>
+        <li class="no">Quanto de receita a empresa gera para cada real de lucro obtido.<span class="why">Relação invertida e sem sentido econômico.</span></li>
+        <li class="no">Quanto de dívida a empresa contrai para cada real de ativo total.<span class="why">Isso é endividamento, não retorno.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 3 — Por que a eficiência importa</p>
+      <p class="step-q">Por que duas empresas com o mesmo lucro podem ter eficiências muito diferentes?</p>
+      <ul class="opts">
+        <li class="ok">Porque uma pode ter usado muito menos capital que a outra para gerar o mesmo lucro.<span class="why">Menos capital para o mesmo lucro = mais eficiência (maior retorno).</span></li>
+        <li class="no">Porque uma pode ter vendido em um setor diferente da outra no mesmo período.<span class="why">O setor influencia, mas não é o que define eficiência sobre o capital.</span></li>
+        <li class="no">Porque o lucro contábil é sempre diferente do lucro econômico de cada empresa.<span class="why">Não é a questão aqui; o ponto é o capital empregado.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 4 — Resolução: o lucro da Aurora em perspectiva</p>
+      <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:42px"></th><th>Ângulo</th><th>Valor</th></tr></thead>
+        <tbody>
+          <tr><td class="k">A</td><td>Lucro absoluto</td><td>R$ 4 mi (sozinho, não diz nada)</td></tr>
+          <tr><td class="k">B</td><td>Sobre o ativo (ROA)</td><td>4 ÷ 80 = 5% (eficiência de todos os ativos)</td></tr>
+          <tr><td class="k">C</td><td>Sobre o PL (ROE)</td><td>4 ÷ 30 = 13,3% (retorno ao sócio)</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note"><b>Fechamento:</b> rentabilidade é <b>eficiência, não tamanho</b>. O mesmo lucro de R$ 4 mi vale mais ou menos conforme o capital que foi preciso para gerá-lo.</div>
+    </div>
+  </section>
+
+  <!-- ============ CENÁRIO 2 ============ -->
+  <section id="c2">
+    <p class="sec-num">05</p>
+    <div class="scn-head"><h2 style="margin:0">Cenário 2 — Lucro, ativos e capital</h2><span class="badge b-int">Intermediário</span></div>
+    <p style="color:var(--ink-soft);margin-top:10px"><em>Conceito-chave: o ROA olha a empresa (todos os ativos); o ROE olha o sócio (capital próprio). A ponte é a alavancagem.</em></p>
+
+    <h4>Contexto</h4>
+    <p>A Aurora tem ROA de 5% e ROE de 13,3%. Por que o retorno do sócio é tão maior que o retorno dos ativos? O aluno relaciona <strong>lucro, ativos e capital</strong>.</p>
+
+    <div class="step">
+      <p class="step-label">Etapa 1 — A base do ROA</p>
+      <p class="step-q">O ROA mede o lucro sobre qual base?</p>
+      <ul class="opts">
+        <li class="ok">Sobre o ativo total, refletindo a eficiência de todos os recursos da empresa.<span class="why">Olha o negócio como um todo, independentemente de como é financiado.</span></li>
+        <li class="no">Sobre o patrimônio líquido, refletindo o retorno do capital dos sócios.<span class="why">Essa é a base do ROE, não do ROA.</span></li>
+        <li class="no">Sobre a dívida onerosa, refletindo o custo do capital de terceiros.<span class="why">Isso é o custo da dívida, não um índice de retorno.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 2 — A base do ROE</p>
+      <p class="step-q">E o ROE mede o lucro sobre qual base?</p>
+      <ul class="opts">
+        <li class="ok">Sobre o patrimônio líquido, refletindo o retorno do capital dos sócios.<span class="why">É o número que o acionista mais observa.</span></li>
+        <li class="no">Sobre o ativo total, refletindo a eficiência de todos os recursos da empresa.<span class="why">Essa é a base do ROA, não do ROE.</span></li>
+        <li class="no">Sobre a receita líquida, refletindo a margem obtida nas vendas do período.<span class="why">Isso é a margem, não o retorno sobre o capital próprio.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 3 — Por que o ROE supera o ROA</p>
+      <p class="step-q">Na Aurora, o ROE (13,3%) é bem maior que o ROA (5%). O que explica?</p>
+      <ul class="opts">
+        <li class="ok">A alavancagem: parte dos ativos é financiada por terceiros, multiplicando o retorno do sócio.<span class="why">O sócio coloca R$ 30 mi e "comanda" R$ 80 mi de ativos.</span></li>
+        <li class="no">A margem: vender com margem alta faz o ROE superar o ROA da empresa.<span class="why">A margem afeta ROA e ROE igualmente; não cria o vão entre eles.</span></li>
+        <li class="no">O giro: girar o ativo muitas vezes faz o ROE superar o ROA da empresa.<span class="why">O giro também afeta os dois igualmente; não explica a diferença.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 4 — Resolução: do ativo ao sócio</p>
+      <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:42px"></th><th>Elo</th><th>Cálculo</th></tr></thead>
+        <tbody>
+          <tr><td class="k">A</td><td>ROA</td><td>4 ÷ 80 = 5% (retorno de todos os ativos)</td></tr>
+          <tr><td class="k">B</td><td>Multiplicador</td><td>Ativo ÷ PL = 80 ÷ 30 = 2,67 (alavancagem)</td></tr>
+          <tr><td class="k">C</td><td>ROE</td><td>ROA × multiplicador = 5% × 2,67 = 13,3% (retorno do sócio)</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note"><b>Fechamento:</b> o ROA olha a empresa; o ROE olha o sócio. A ponte é a <b>alavancagem</b> — que multiplica o retorno (e o risco, como vimos na Aula 9).</div>
+    </div>
+  </section>
+
+  <!-- ============ CENÁRIO 3 ============ -->
+  <section id="c3">
+    <p class="sec-num">06</p>
+    <div class="scn-head"><h2 style="margin:0">Cenário 3 — Mesmo ROE, histórias diferentes</h2><span class="badge b-adv">Avançado</span></div>
+    <p style="color:var(--ink-soft);margin-top:10px"><em>Conceito-chave: dois ROEs iguais podem ter qualidades opostas — um vindo de eficiência, outro de alavancagem.</em></p>
+
+    <h4>Contexto</h4>
+    <p>Duas empresas têm <strong>ROE de 15%</strong>. A diretoria diz que "são igualmente boas". O aluno decompõe o retorno e descobre que não. <em>(Use a comparação Sólida × Alavancada do dataset.)</em></p>
+
+    <div class="step">
+      <p class="step-label">Etapa 1 — De onde vem cada ROE</p>
+      <p class="step-q">As duas têm ROE 15%. De onde vem o ROE de cada uma?</p>
+      <ul class="opts">
+        <li class="ok">A Sólida vem de ROA alto (10%); a Alavancada, de muita dívida (multiplicador 3,0).<span class="why">Mesma chegada, caminhos opostos: eficiência × alavancagem.</span></li>
+        <li class="no">A Sólida vem de muita dívida; a Alavancada, de eficiência operacional alta.<span class="why">Invertido: a Sólida tem ROA alto e pouca dívida.</span></li>
+        <li class="no">As duas vêm da mesma fonte, já que o ROE final é idêntico nas duas.<span class="why">ROE igual não implica fonte igual — é justamente o ponto do cenário.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 2 — Qual embute mais risco</p>
+      <p class="step-q">Qual das duas embute mais risco para alcançar o mesmo ROE?</p>
+      <ul class="opts">
+        <li class="ok">A Alavancada: depende de dívida alta, que amplia as perdas em anos ruins.<span class="why">O multiplicador 3,0 é alavancagem pesada (como vimos na Aula 9).</span></li>
+        <li class="no">A Sólida: depende de margem alta, que pode cair se a concorrência apertar.<span class="why">A Sólida tem ROA alto e baixa dívida — é a menos arriscada.</span></li>
+        <li class="no">Nenhuma: ROE igual significa risco igual, independentemente da estrutura.<span class="why">É a confusão clássica: ROE igual esconde riscos muito diferentes.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 3 — A interpretação econômica</p>
+      <p class="step-q">Qual a leitura econômica correta dessa comparação?</p>
+      <ul class="opts">
+        <li class="ok">ROE igual não significa qualidade igual: a fonte do retorno muda o risco e a sustentabilidade.<span class="why">Eficiência é mais sustentável que alavancagem para gerar retorno.</span></li>
+        <li class="no">ROE igual significa qualidade igual: o mercado só enxerga o retorno final ao sócio.<span class="why">O mercado precifica também o risco da fonte do retorno.</span></li>
+        <li class="no">ROE igual favorece sempre a mais alavancada, pois ela usa menos capital próprio.<span class="why">Menos capital próprio significa mais risco, não vantagem automática.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 4 — Resolução: o mesmo 15%, duas histórias</p>
+      <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:42px"></th><th>Empresa</th><th>Decomposição do ROE</th><th style="width:90px"></th></tr></thead>
+        <tbody>
+          <tr><td class="k">A</td><td>Sólida</td><td>ROA 10% × multiplicador 1,5 = 15%</td><td><span class="pill s">eficiência</span></td></tr>
+          <tr><td class="k">B</td><td>Alavancada</td><td>ROA 5% × multiplicador 3,0 = 15%</td><td><span class="pill w">risco</span></td></tr>
+          <tr><td class="k">C</td><td>A lição</td><td>O ROE não se explica sozinho — é preciso saber de onde ele vem</td><td><span class="pill m">nuance</span></td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note"><b>Fechamento:</b> dois ROEs iguais podem ser realidades opostas. Decompor o retorno (a próxima etapa) revela a história por trás do número.</div>
+    </div>
+  </section>
+
+  <!-- ============ CENÁRIO 4 ============ -->
+  <section id="c4">
+    <p class="sec-num">07</p>
+    <div class="scn-head"><h2 style="margin:0">Cenário 4 — A fórmula DuPont</h2><span class="badge b-sup">Super Desafio</span></div>
+    <p style="color:var(--ink-soft);margin-top:10px"><em>Conceito-chave: ROE = Margem × Giro × Alavancagem. Decompor o retorno revela qual motor o impulsiona.</em></p>
+
+    <h4>Contexto</h4>
+    <p>O aluno decompõe o ROE da Aurora pela <strong>fórmula DuPont</strong> e entende o trade-off entre margem e giro que define os modelos de negócio. <em>(Use os dados de DuPont e o trade-off margem × giro do dataset.)</em></p>
+
+    <div class="step">
+      <p class="step-label">Etapa 1 — Os três fatores</p>
+      <p class="step-q">A fórmula DuPont decompõe o ROE em quais três fatores?</p>
+      <ul class="opts">
+        <li class="ok">Margem líquida, giro do ativo e multiplicador de alavancagem (Ativo ÷ PL).<span class="why">Rentabilidade × eficiência de ativos × estrutura de capital.</span></li>
+        <li class="no">Margem bruta, liquidez corrente e cobertura de juros da dívida onerosa.<span class="why">Mistura indicadores de aulas diferentes; não é a DuPont.</span></li>
+        <li class="no">Receita, lucro operacional e patrimônio líquido do período analisado.<span class="why">São componentes soltos, não os três fatores do DuPont.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 2 — O DuPont da Aurora</p>
+      <p class="step-q">O ROE da Aurora (13,3%) decompõe-se como?</p>
+      <ul class="opts">
+        <li class="ok">Margem 8% × giro 0,625 × multiplicador 2,67 = 13,3%.<span class="why">Cada fator no seu lugar: margem (8%), giro (0,625), alavancagem (2,67).</span></li>
+        <li class="no">Margem 8% × giro 2,67 × multiplicador 0,625 = 13,3%.<span class="why">Troca giro e multiplicador de lugar; o produto até bate, mas os conceitos não.</span></li>
+        <li class="no">Margem 13,3% × giro 1,0 × multiplicador 1,0 = 13,3%.<span class="why">Colapsa tudo na margem; não decompõe nada.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 3 — O trade-off margem × giro</p>
+      <p class="step-q">Uma joalheria tem margem 20% e giro 0,5; um supermercado, margem 2% e giro 5,0. O que isso mostra?</p>
+      <ul class="opts">
+        <li class="ok">Modelos diferentes chegam ao mesmo ROA (10%): muita margem com pouco giro, ou o inverso.<span class="why">20%×0,5 = 10% e 2%×5,0 = 10%: caminhos opostos, mesmo retorno do ativo.</span></li>
+        <li class="no">A joalheria é sempre mais rentável, pois margem alta supera qualquer giro baixo.<span class="why">Não: o giro baixo derruba o ROA; aqui empatam em 10%.</span></li>
+        <li class="no">O supermercado é sempre mais rentável, pois giro alto supera qualquer margem baixa.<span class="why">Não: a margem mínima compensa só com giro altíssimo; aqui empatam.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 4 — Resolução: o ROE decomposto</p>
+      <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:42px"></th><th>Visão</th><th>Decomposição</th></tr></thead>
+        <tbody>
+          <tr><td class="k">A</td><td>DuPont da Aurora</td><td>8% (margem) × 0,625 (giro) × 2,67 (alavancagem) = 13,3%</td></tr>
+          <tr><td class="k">B</td><td>Trade-off margem × giro</td><td>Joalheria 20%×0,5 = 10% · Supermercado 2%×5,0 = 10% (mesmo ROA)</td></tr>
+          <tr><td class="k">C</td><td>A lição</td><td>O DuPont mostra de onde vem o retorno: margem, giro ou alavancagem</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note"><b>Fechamento:</b> a fórmula DuPont é a <b>chave de fenda do retorno</b>. Abre o ROE em três motores — margem, giro e alavancagem — e mostra qual deles está puxando (ou travando) a rentabilidade. Dois ROEs iguais, motores diferentes.</div>
+    </div>
+  </section>
+
+  <!-- ============ 8. RESULT PANEL ============ -->
+  <section id="result">
+    <p class="sec-num">08</p>
+    <h2>ResultPanel</h2>
+    <p>Ao concluir um cenário, o painel de resultado exibe:</p>
+    <ul style="padding-left:20px">
+      <li><strong>Score do cenário</strong> (soma das etapas), com selo de desempenho (ex.: "Medindo retorno", "Mestre do DuPont").</li>
+      <li><strong>Quadro de resolução</strong> (a tabela A/B/C da Etapa 4), substituindo o diagrama de payoff do exemplo de derivativos.</li>
+      <li><strong>Explicação didática</strong> retomando por que a opção correta de cada etapa é a correta — com os números da Aurora ou das empresas de comparação.</li>
+      <li><strong>Contrafactual</strong>: "E se o sócio tivesse escolhido só pelo ROE?" — mostra o erro de ignorar a fonte do retorno.</li>
+    </ul>
+    <div class="note"><b>Visual opcional (leve):</b> uma <b>árvore DuPont</b> (ROE no topo, ramificando em margem, giro e alavancagem) é o visual definitivo do módulo — clicar em cada fator mostra como ele se forma. No Cenário 4, um <b>gráfico margem × giro</b> com curvas de ROA constante (hipérboles) coloca joalheria e supermercado na mesma curva. Pode usar <code>Recharts</code> ou SVG; não é obrigatório.</div>
+  </section>
+
+  <!-- ============ 9. NAVEGAÇÃO ============ -->
+  <section id="nav">
+    <p class="sec-num">09</p>
+    <h2>Navegação e gamificação <span style="font-size:15px;font-weight:400;color:var(--ink-soft)">(transversais a todos os módulos)</span></h2>
+    <h4>Navegação bidirecional</h4>
+    <ul style="padding-left:20px">
+      <li>Botão "← Etapa anterior" para voltar um passo.</li>
+      <li>Barra de progresso clicável (segmentos concluídos são navegáveis).</li>
+      <li>Ao revisitar uma etapa, um banner mostra a resposta anterior e destaca o botão selecionado.</li>
+      <li>Re-responder descarta as respostas subsequentes e recalcula a pontuação.</li>
+    </ul>
+    <h4>Gamificação</h4>
+    <ul style="padding-left:20px">
+      <li>Pontuação por etapa (correta = máximo; parcial = metade; errada = 0).</li>
+      <li>Barra de progresso com score acumulado dentro do cenário.</li>
+      <li>Score por cenário na tela inicial do módulo.</li>
+      <li>Score total acumulado (todos os cenários do módulo, somável com outros módulos do app).</li>
+    </ul>
+  </section>
+
+  <!-- ============ 10. ESTRUTURA DE DADOS ============ -->
+  <section id="dados">
+    <p class="sec-num">10</p>
+    <h2>Estrutura de dados sugerida</h2>
+    <p>Mesmo modelo dos módulos anteriores, com rentabilidade, DuPont e as empresas de comparação:</p>
+<pre><span class="c">// data/modulo10.ts</span>
+const rentabilidade = {
+  margemLiquida: 0.08, giro: 0.625, roa: 0.05,
+  multiplicador: 2.67, roe: 0.133,
+};
+
+<span class="c">// ROE pela fórmula DuPont (3 fatores):</span>
+function roeDuPont(margem, giro, multiplicador) {
+  return margem * giro * multiplicador;
+}
+
+const mesmoRoe = {
+  solida:     { margem: 0.10, giro: 1.0, roa: 0.10, mult: 1.5, roe: 0.15 },
+  alavancada: { margem: 0.05, giro: 1.0, roa: 0.05, mult: 3.0, roe: 0.15 },
+};
+
+const tradeoffMargemGiro = {
+  joalheria:    { margem: 0.20, giro: 0.5, roa: 0.10 },
+  supermercado: { margem: 0.02, giro: 5.0, roa: 0.10 },
+};
+
+<span class="c">// Scenario[], Step[], Option[] reaproveitam os tipos dos módulos 1–9.</span>
+<span class="c">// label das opções: manter paralelismo; distratoras trocam base ou fator.</span></pre>
+    <div class="note"><b>Observação para implementação:</b> a árvore DuPont pode ter <b>sliders</b> em margem, giro e multiplicador que recalculam o ROE ao vivo (<code>roeDuPont</code>) — mexer em cada fator e ver o ROE responder fixa a fórmula de forma muito eficaz. Reaproveita o multiplicador da Aula 9.</div>
+  </section>
+
+  <!-- ============ 11. RESUMO ============ -->
+  <section id="resumo" style="border-bottom:none">
+    <p class="sec-num">11</p>
+    <h2>Resumo dos 4 cenários</h2>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:34px">#</th><th>Título</th><th style="width:120px">Dificuldade</th><th>Conceito-chave</th></tr></thead>
+      <tbody>
+        <tr><td class="k">1</td><td>Eficiência econômica</td><td><span class="badge b-int">Intermediário</span></td><td>Retorno = lucro por real de capital, não valor absoluto</td></tr>
+        <tr><td class="k">2</td><td>Lucro, ativos e capital</td><td><span class="badge b-int">Intermediário</span></td><td>ROA (empresa) × ROE (sócio); a ponte é a alavancagem</td></tr>
+        <tr><td class="k">3</td><td>Mesmo ROE, histórias diferentes</td><td><span class="badge b-adv">Avançado</span></td><td>ROE igual, fontes opostas: eficiência × alavancagem (risco)</td></tr>
+        <tr><td class="k">4</td><td>A fórmula DuPont</td><td><span class="badge b-sup">Super Desafio</span></td><td>ROE = margem × giro × alavancagem; trade-off margem × giro</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <footer class="doc">
+    spec_modulo_10.html · Laboratório de Análise de Demonstrações Financeiras · Aula 10 — Rentabilidade e Retorno
+  </footer>
+
+</div>
+</body>
+</html>

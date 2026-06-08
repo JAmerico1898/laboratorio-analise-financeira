@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FinLab | Análise de Demonstrações Financeiras — COPPEAD UFRJ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-container": "#134866",
+              "error": "#ba1a1a",
+              "on-error-container": "#93000a",
+              "outline-variant": "#bfc9c4",
+              "primary-fixed-dim": "#9eccf0",
+              "surface-container-lowest": "#ffffff",
+              "surface": "#f8f9fa",
+              "background": "#f8f9fa",
+              "tertiary-fixed-dim": "#88d982",
+              "on-surface": "#191c1d",
+              "on-tertiary": "#ffffff",
+              "secondary-fixed": "#8df5e4",
+              "on-background": "#191c1d",
+              "inverse-surface": "#2e3132",
+              "error-container": "#ffdad6",
+              "secondary": "#006b5f",
+              "primary": "#00314a",
+              "secondary-fixed-dim": "#70d8c8",
+              "primary-fixed": "#cae6ff",
+              "on-tertiary-fixed-variant": "#005312",
+              "tertiary-fixed": "#a3f69c",
+              "on-secondary-fixed": "#00201c",
+              "on-primary-fixed": "#001e2f",
+              "surface-container-low": "#f3f4f5",
+              "tertiary-container": "#004f11",
+              "on-tertiary-fixed": "#002204",
+              "surface-dim": "#d9dadb",
+              "on-tertiary-container": "#72c26e",
+              "on-primary-fixed-variant": "#184b6a",
+              "surface-container-high": "#e7e8e9",
+              "tertiary": "#003608",
+              "surface-variant": "#e1e3e4",
+              "outline": "#707975",
+              "on-surface-variant": "#3f4945",
+              "on-secondary": "#ffffff",
+              "surface-bright": "#f8f9fa",
+              "on-primary-container": "#89b6d9",
+              "inverse-on-surface": "#f0f1f2",
+              "on-error": "#ffffff",
+              "on-secondary-container": "#007165",
+              "surface-tint": "#346383",
+              "surface-container": "#edeeef",
+              "inverse-primary": "#9eccf0",
+              "on-primary": "#ffffff",
+              "on-secondary-fixed-variant": "#005048",
+              "surface-container-highest": "#e1e3e4",
+              "secondary-container": "#8df5e4"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #00314a 0%, #134866 100%);
+        }
+        .tonal-shift-dark {
+            background-color: #001a26;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body antialiased">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md shadow-[0_12px_32px_rgba(25,28,29,0.06)] h-20">
+<div class="flex justify-between items-center max-w-7xl mx-auto px-8 h-full">
+<a href="#" class="flex items-center">
+<img alt="FinLab" class="h-12 w-auto" src="../public/logo/finlab-transparent.png"/>
+</a>
+<nav class="hidden md:flex items-center gap-8">
+<a class="font-manrope font-bold tracking-tight text-lg text-[#006b5f] border-b-2 border-[#006b5f] pb-1" href="#modulos">Módulos</a>
+<a class="font-manrope font-bold tracking-tight text-lg text-slate-600 hover:text-[#00314a] transition-colors" href="#metodologia">Metodologia</a>
+<a class="font-manrope font-bold tracking-tight text-lg text-slate-600 hover:text-[#00314a] transition-colors" href="#">Sobre</a>
+<a class="font-manrope font-bold tracking-tight text-lg text-slate-600 hover:text-[#00314a] transition-colors" href="#">Contato</a>
+</nav>
+<div class="flex items-center gap-4">
+<a href="#modulos" class="bg-primary text-on-primary px-6 py-3 rounded-xl font-semibold active:scale-95 duration-200 ease-in-out">Acessar Lab</a>
+</div>
+</div>
+<div class="bg-gradient-to-r from-transparent via-[#006b5f]/10 to-transparent h-[1px]"></div>
+</header>
+<!-- Hero Section -->
+<section class="relative pt-40 pb-24 overflow-hidden">
+<div class="absolute inset-0 z-0">
+<div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary-container/10 to-transparent opacity-50"></div>
+</div>
+<div class="max-w-7xl mx-auto px-8 relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+<div class="space-y-8">
+<h1 class="text-6xl md:text-7xl font-headline font-extrabold text-primary leading-[1.1] tracking-tight">
+                    Laboratório de Análise de <span class="text-secondary">Demonstrações Financeiras</span>
+</h1>
+<p class="text-xl text-on-surface-variant max-w-xl leading-relaxed">
+                    Domine a leitura e interpretação de balanços, DRE e fluxo de caixa por meio de demonstrações reais, indicadores e simulações interativas. Uma plataforma pedagógica de excelência acadêmica para o mercado financeiro.
+                </p>
+</div>
+<div class="relative">
+<div class="absolute -inset-4 bg-secondary/10 rounded-3xl blur-3xl"></div>
+<div class="relative z-10 w-full aspect-[4/3] bg-surface-container-lowest rounded-2xl shadow-2xl flex items-center justify-center p-12">
+<img alt="FinLab — Laboratório de Análise de Demonstrações Financeiras" class="w-full h-full object-contain" src="../public/logo/finlab-transparent.png"/>
+</div>
+</div>
+</div>
+</section>
+<!-- How It Works Section -->
+<section id="metodologia" class="bg-surface-container-low py-24">
+<div class="max-w-7xl mx-auto px-8">
+<div class="text-center mb-16 space-y-4">
+<h2 class="text-4xl font-headline font-bold text-primary">Metodologia de Aprendizado</h2>
+<div class="w-24 h-1 bg-secondary mx-auto rounded-full"></div>
+</div>
+<div class="grid md:grid-cols-3 gap-8">
+<!-- Step 1 -->
+<div class="flex flex-col items-center text-center p-8 space-y-6">
+<div class="w-16 h-16 bg-primary-container text-on-primary-container rounded-2xl flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-3xl">topic</span>
+</div>
+<div class="space-y-2">
+<h3 class="text-xl font-bold text-primary">1. Seleção do Módulo</h3>
+<p class="text-on-surface-variant">Escolha entre os 15 módulos da trilha de análise de demonstrações financeiras.</p>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="flex flex-col items-center text-center p-8 space-y-6">
+<div class="w-16 h-16 bg-secondary text-on-secondary rounded-2xl flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-3xl">query_stats</span>
+</div>
+<div class="space-y-2">
+<h3 class="text-xl font-bold text-primary">2. Exploração Interativa</h3>
+<p class="text-on-surface-variant">Explore demonstrações reais, indicadores e simulações dinâmicas em tempo real.</p>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="flex flex-col items-center text-center p-8 space-y-6">
+<div class="w-16 h-16 bg-tertiary-container text-on-tertiary-container rounded-2xl flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-3xl">school</span>
+</div>
+<div class="space-y-2">
+<h3 class="text-xl font-bold text-primary">3. Consolidação Técnica</h3>
+<p class="text-on-surface-variant">Interprete resultados, avalie a saúde financeira e consolide o rigor analítico.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Modules Grid Section -->
+<section id="modulos" class="py-24 bg-surface">
+<div class="max-w-7xl mx-auto px-8">
+<div class="mb-16">
+<div class="space-y-2">
+<h2 class="text-4xl font-headline font-bold text-primary tracking-tight">Acesse os módulos clicando abaixo</h2>
+</div>
+</div>
+<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Module 1 -->
+<a href="../specs/spec_modulo_1.html" class="group cursor-pointer bg-surface-container-lowest rounded-xl p-8 hover:shadow-[0_12px_32px_rgba(25,28,29,0.06)] transition-all duration-300 flex flex-col justify-between min-h-[320px] relative overflow-hidden">
+<div class="space-y-4 relative z-10">
+<div class="w-12 h-12 bg-surface-container-highest rounded-lg flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">menu_book</span>
+</div>
+<h3 class="text-xl font-bold text-primary">Introdução à Análise</h3>
+<p class="text-on-surface-variant leading-relaxed text-sm">Fundamentos, objetivos e usuários da análise das demonstrações financeiras.</p>
+</div>
+<div class="mt-8 relative z-10 flex items-center gap-2 text-secondary font-semibold text-sm">
+<span>Acessar módulo</span>
+<span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</a>
+<!-- Module 2 -->
+<a href="../specs/spec_modulo_2.html" class="group cursor-pointer bg-surface-container-lowest rounded-xl p-8 hover:shadow-[0_12px_32px_rgba(25,28,29,0.06)] transition-all duration-300 flex flex-col justify-between min-h-[320px] relative overflow-hidden">
+<div class="space-y-4 relative z-10">
+<div class="w-12 h-12 bg-surface-container-highest rounded-lg flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">schema</span>
+</div>
+<h3 class="text-xl font-bold text-primary">Estrutura das Demonstrações</h3>
+<p class="text-on-surface-variant leading-relaxed text-sm">Como as demonstrações se conectam: Balanço, DRE, DFC e DMPL em um todo coerente.</p>
+</div>
+<div class="mt-8 relative z-10 flex items-center gap-2 text-secondary font-semibold text-sm">
+<span>Acessar módulo</span>
+<span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</a>
+<!-- Module 3 -->
+<a href="../specs/spec_modulo_3.html" class="group cursor-pointer bg-surface-container-lowest rounded-xl p-8 hover:shadow-[0_12px_32px_rgba(25,28,29,0.06)] transition-all duration-300 flex flex-col justify-between min-h-[320px] relative overflow-hidden">
+<div class="space-y-4 relative z-10">
+<div class="w-12 h-12 bg-surface-container-highest rounded-lg flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">rule</span>
+</div>
+<h3 class="text-xl font-bold text-primary">Princípios Contábeis</h3>
+<p class="text-on-surface-variant leading-relaxed text-sm">Regime de competência, princípios contábeis e qualidade da informação contábil.</p>
+</div>
+<div class="mt-8 relative z-10 flex items-center gap-2 text-secondary font-semibold text-sm">
+<span>Acessar módulo</span>
+<span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</a>
+<!-- Module 4 -->
+<a href="../specs/spec_modulo_4.html" class="group cursor-pointer bg-surface-container-lowest rounded-xl p-8 hover:shadow-[0_12px_32px_rgba(25,28,29,0.06)] transition-all duration-300 flex flex-col justify-between min-h-[320px] relative overflow-hidden">
+<div class="space-y-4 relative z-10">
+<div class="w-12 h-12 bg-surface-container-highest rounded-lg flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">account_balance</span>
+</div>
+<h3 class="text-xl font-bold text-primary">Balanço Patrimonial</h3>
+<p class="text-on-surface-variant leading-relaxed text-sm">Ativo, passivo e patrimônio líquido: leitura e interpretação do Balanço Patrimonial.</p>
+</div>
+<div class="mt-8 relative z-10 flex items-center gap-2 text-secondary font-semibold text-sm">
+<span>Acessar módulo</span>
+<span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</a>
+<!-- Module 5 -->
+<a href="../specs/spec_modulo_5.html" class="group cursor-pointer bg-surface-container-lowest rounded-xl p-8 hover:shadow-[0_12px_32px_rgba(25,28,29,0.06)] transition-all duration-300 flex flex-col justify-between min-h-[320px] relative overflow-hidden">
+<div class="space-y-4 relative z-10">
+<div class="w-12 h-12 bg-surface-container-highest rounded-lg flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">receipt_long</span>
+</div>
+<h3 class="text-xl font-bold text-primary">Resultado (DRE)</h3>
+<p class="text-on-surface-variant leading-relaxed text-sm">Receitas, custos, despesas e a formação do resultado do exercício na DRE.</p>
+</div>
+<div class="mt-8 relative z-10 flex items-center gap-2 text-secondary font-semibold text-sm">
+<span>Acessar módulo</span>
+<span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</a>
+<!-- Module 6 -->
+<a href="../specs/spec_modulo_6.html" class="group cursor-pointer bg-surface-container-lowest rounded-xl p-8 hover:shadow-[0_12px_32px_rgba(25,28,29,0.06)] transition-all duration-300 flex flex-col justify-between min-h-[320px] relative overflow-hidden">
+<div class="space-y-4 relative z-10">
+<div class="w-12 h-12 bg-surface-container-highest rounded-lg flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<h3 class="text-xl font-bold text-primary">Fluxos de Caixa (DFC)</h3>
+<p class="text-on-surface-variant leading-relaxed text-sm">Fluxos operacionais, de investimento e financiamento e a geração de caixa.</p>
+</div>
+<div class="mt-8 relative z-10 flex items-center gap-2 text-secondary font-semibold text-sm">
+<span>Acessar módulo</span>
+<span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</a>
+<!-- Module 7 -->
+<a href="../specs/spec_modulo_7.html" class="group cursor-pointer bg-surface-container-lowest rounded-xl p-8 hover:shadow-[0_12px_32px_rgba(25,28,29,0.06)] transition-all duration-300 flex flex-col justify-between min-h-[320px] relative overflow-hidden">
+<div class="space-y-4 relative z-10">
+<div class="w-12 h-12 bg-surface-container-highest rounded-lg flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">table_chart</span>
+</div>
+<h3 class="text-xl font-bold text-primary">Análise Horizontal e Vertical</h3>
+<p class="text-on-surface-variant leading-relaxed text-sm">Evolução temporal e composição percentual das demonstrações financeiras.</p>
+</div>
+<div class="mt-8 relative z-10 flex items-center gap-2 text-secondary font-semibold text-sm">
+<span>Acessar módulo</span>
+<span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</a>
+<!-- Module 8 -->
+<a href="../specs/spec_modulo_8.html" class="group cursor-pointer bg-surface-container-lowest rounded-xl p-8 hover:shadow-[0_12px_32px_rgba(25,28,29,0.06)] transition-all duration-300 flex flex-col justify-between min-h-[320px] relative overflow-hidden">
+<div class="space-y-4 relative z-10">
+<div class="w-12 h-12 bg-surface-container-highest rounded-lg flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">water_drop</span>
+</div>
+<h3 class="text-xl font-bold text-primary">Liquidez e Capital de Giro</h3>
+<p class="text-on-surface-variant leading-relaxed text-sm">Índices de liquidez, ciclo operacional e gestão do capital de giro.</p>
+</div>
+<div class="mt-8 relative z-10 flex items-center gap-2 text-secondary font-semibold text-sm">
+<span>Acessar módulo</span>
+<span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</a>
+<!-- Module 9 -->
+<a href="../specs/spec_modulo_9.html" class="group cursor-pointer bg-surface-container-lowest rounded-xl p-8 hover:shadow-[0_12px_32px_rgba(25,28,29,0.06)] transition-all duration-300 flex flex-col justify-between min-h-[320px] relative overflow-hidden">
+<div class="space-y-4 relative z-10">
+<div class="w-12 h-12 bg-surface-container-highest rounded-lg flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">balance</span>
+</div>
+<h3 class="text-xl font-bold text-primary">Endividamento e Estrutura de Capital</h3>
+<p class="text-on-surface-variant leading-relaxed text-sm">Composição da dívida, alavancagem e estrutura de capital da empresa.</p>
+</div>
+<div class="mt-8 relative z-10 flex items-center gap-2 text-secondary font-semibold text-sm">
+<span>Acessar módulo</span>
+<span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</a>
+<!-- Module 10 -->
+<a href="../specs/spec_modulo_10.html" class="group cursor-pointer bg-surface-container-lowest rounded-xl p-8 hover:shadow-[0_12px_32px_rgba(25,28,29,0.06)] transition-all duration-300 flex flex-col justify-between min-h-[320px] relative overflow-hidden">
+<div class="space-y-4 relative z-10">
+<div class="w-12 h-12 bg-surface-container-highest rounded-lg flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">trending_up</span>
+</div>
+<h3 class="text-xl font-bold text-primary">Rentabilidade e Retorno</h3>
+<p class="text-on-surface-variant leading-relaxed text-sm">Margens, ROA, ROE e a geração de retorno sobre o capital investido.</p>
+</div>
+<div class="mt-8 relative z-10 flex items-center gap-2 text-secondary font-semibold text-sm">
+<span>Acessar módulo</span>
+<span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</a>
+<!-- Module 11 -->
+<a href="../specs/spec_modulo_11.html" class="group cursor-pointer bg-surface-container-lowest rounded-xl p-8 hover:shadow-[0_12px_32px_rgba(25,28,29,0.06)] transition-all duration-300 flex flex-col justify-between min-h-[320px] relative overflow-hidden">
+<div class="space-y-4 relative z-10">
+<div class="w-12 h-12 bg-surface-container-highest rounded-lg flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">hub</span>
+</div>
+<h3 class="text-xl font-bold text-primary">Modelo DuPont</h3>
+<p class="text-on-surface-variant leading-relaxed text-sm">Análise integrada: decomposição do ROE e os direcionadores de retorno.</p>
+</div>
+<div class="mt-8 relative z-10 flex items-center gap-2 text-secondary font-semibold text-sm">
+<span>Acessar módulo</span>
+<span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</a>
+<!-- Module 12 -->
+<a href="../specs/spec_modulo_12.html" class="group cursor-pointer bg-surface-container-lowest rounded-xl p-8 hover:shadow-[0_12px_32px_rgba(25,28,29,0.06)] transition-all duration-300 flex flex-col justify-between min-h-[320px] relative overflow-hidden">
+<div class="space-y-4 relative z-10">
+<div class="w-12 h-12 bg-surface-container-highest rounded-lg flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">leaderboard</span>
+</div>
+<h3 class="text-xl font-bold text-primary">Comparativa e Benchmarking</h3>
+<p class="text-on-surface-variant leading-relaxed text-sm">Comparação entre empresas, setores e benchmarks de mercado.</p>
+</div>
+<div class="mt-8 relative z-10 flex items-center gap-2 text-secondary font-semibold text-sm">
+<span>Acessar módulo</span>
+<span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</a>
+<!-- Module 13 -->
+<a href="../specs/spec_modulo_13.html" class="group cursor-pointer bg-surface-container-lowest rounded-xl p-8 hover:shadow-[0_12px_32px_rgba(25,28,29,0.06)] transition-all duration-300 flex flex-col justify-between min-h-[320px] relative overflow-hidden">
+<div class="space-y-4 relative z-10">
+<div class="w-12 h-12 bg-surface-container-highest rounded-lg flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">troubleshoot</span>
+</div>
+<h3 class="text-xl font-bold text-primary">Qualidade do Lucro e Sinais de Alerta</h3>
+<p class="text-on-surface-variant leading-relaxed text-sm">Qualidade do lucro, red flags e detecção de manipulação contábil.</p>
+</div>
+<div class="mt-8 relative z-10 flex items-center gap-2 text-secondary font-semibold text-sm">
+<span>Acessar módulo</span>
+<span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</a>
+<!-- Module 14 -->
+<a href="../specs/spec_modulo_14.html" class="group cursor-pointer bg-surface-container-lowest rounded-xl p-8 hover:shadow-[0_12px_32px_rgba(25,28,29,0.06)] transition-all duration-300 flex flex-col justify-between min-h-[320px] relative overflow-hidden">
+<div class="space-y-4 relative z-10">
+<div class="w-12 h-12 bg-surface-container-highest rounded-lg flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">insights</span>
+</div>
+<h3 class="text-xl font-bold text-primary">Tomada de Decisão</h3>
+<p class="text-on-surface-variant leading-relaxed text-sm">Da análise à decisão: crédito, investimento e avaliação de desempenho.</p>
+</div>
+<div class="mt-8 relative z-10 flex items-center gap-2 text-secondary font-semibold text-sm">
+<span>Acessar módulo</span>
+<span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</a>
+<!-- Module 15 -->
+<a href="../specs/spec_modulo_15.html" class="group cursor-pointer bg-surface-container-lowest rounded-xl p-8 hover:shadow-[0_12px_32px_rgba(25,28,29,0.06)] transition-all duration-300 flex flex-col justify-between min-h-[320px] relative overflow-hidden">
+<div class="space-y-4 relative z-10">
+<div class="w-12 h-12 bg-surface-container-highest rounded-lg flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">workspace_premium</span>
+</div>
+<h3 class="text-xl font-bold text-primary">Estudo de Caso Integrado</h3>
+<p class="text-on-surface-variant leading-relaxed text-sm">Aplicação completa: estudo de caso integrado e revisão geral do curso.</p>
+</div>
+<div class="mt-8 relative z-10 flex items-center gap-2 text-secondary font-semibold text-sm">
+<span>Acessar módulo</span>
+<span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</a>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="w-full py-12 border-t border-white/10 bg-[#00314a]">
+<div class="flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto px-8 gap-6">
+<div class="flex flex-col items-center md:items-start gap-4">
+<div class="text-xl font-manrope font-bold text-white">FinLab</div>
+<div class="font-inter text-sm text-slate-300">© 2026 Laboratório de Análise de Demonstrações Financeiras. Todos os direitos reservados.</div>
+</div>
+<div class="flex gap-8">
+<a class="text-slate-400 hover:text-emerald-400 transition-opacity hover:opacity-80 underline decoration-emerald-500/50 underline-offset-4" href="#">Termos de Uso</a>
+<a class="text-slate-400 hover:text-emerald-400 transition-opacity hover:opacity-80 underline decoration-emerald-500/50 underline-offset-4" href="#">Privacidade</a>
+<a class="text-slate-400 hover:text-emerald-400 transition-opacity hover:opacity-80 underline decoration-emerald-500/50 underline-offset-4" href="#">UFRJ</a>
+<a class="text-slate-400 hover:text-emerald-400 transition-opacity hover:opacity-80 underline decoration-emerald-500/50 underline-offset-4" href="#">COPPEAD</a>
+</div>
+</div>
+</footer>
+</body></html>

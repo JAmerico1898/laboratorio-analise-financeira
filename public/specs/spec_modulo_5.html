@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Especificação — Módulo 5 | Laboratório de Análise de Demonstrações Financeiras</title>
+<style>
+  :root{
+    --ink:#1b2430;--ink-soft:#46586b;--paper:#fbfaf6;--paper-2:#f3f1ea;
+    --line:#dcd7cb;--line-soft:#e8e4da;--accent:#0f5c4a;--accent-soft:#e4efe9;
+    --gold:#9a6b14;--gold-soft:#f5edd9;--ok:#15663f;--ok-bg:#e7f1ea;--no:#9e261c;--no-bg:#f6e6e4;
+    --shadow:0 1px 2px rgba(27,36,48,.06), 0 8px 24px rgba(27,36,48,.05);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    --sans:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:"SFMono-Regular",ui-monospace,"Cascadia Code",Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:radial-gradient(1200px 600px at 85% -10%, var(--accent-soft), transparent 55%),var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:880px;margin:0 auto;padding:0 24px 96px}
+
+  header.doc{padding:64px 0 36px;border-bottom:2px solid var(--ink);margin-bottom:8px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+  header.doc h1{font-family:var(--serif);font-weight:600;font-size:clamp(30px,5vw,46px);line-height:1.08;letter-spacing:-.01em;margin:0 0 10px}
+  header.doc .sub{font-family:var(--serif);font-style:italic;font-size:20px;color:var(--ink-soft);margin:0 0 22px}
+  .meta{display:flex;flex-wrap:wrap;gap:10px;font-family:var(--mono);font-size:12.5px;color:var(--ink-soft)}
+  .meta span{background:var(--paper-2);border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+
+  section{padding:40px 0;border-bottom:1px solid var(--line-soft)}
+  .sec-num{font-family:var(--mono);font-size:13px;color:var(--gold);letter-spacing:.1em}
+  h2{font-family:var(--serif);font-weight:600;font-size:28px;line-height:1.15;margin:6px 0 18px;letter-spacing:-.01em}
+  h3{font-family:var(--serif);font-weight:600;font-size:21px;margin:28px 0 10px}
+  h4{font-family:var(--sans);font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:24px 0 8px}
+  p{margin:0 0 14px}
+  .lead{font-size:17.5px;color:var(--ink-soft)}
+  strong{color:var(--ink)}
+  a{color:var(--accent)}
+
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:var(--shadow);margin:18px 0}
+  .note{background:var(--gold-soft);border:1px solid #e7d9b0;border-left:4px solid var(--gold);border-radius:8px;padding:14px 18px;margin:18px 0;font-size:15px}
+  .note b{color:var(--gold)}
+
+  .scn-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;border-left:4px solid var(--accent);padding-left:16px;margin:8px 0 4px}
+  .badge{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:6px;border:1px solid var(--line);background:var(--paper-2);color:var(--ink-soft);white-space:nowrap}
+  .badge.b-bas{background:#e6eef5;border-color:#c3d4e3;color:#2c5478}
+  .badge.b-int{background:var(--accent-soft);border-color:#bcd9cf;color:var(--accent)}
+  .badge.b-adv{background:var(--gold-soft);border-color:#e7d9b0;color:var(--gold)}
+  .badge.b-sup{background:#efe6f3;border-color:#d6c2e0;color:#6c3a86}
+
+  .step{margin:18px 0}
+  .step-label{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--ink-soft);text-transform:uppercase;margin-bottom:8px}
+  .step-q{font-family:var(--serif);font-size:18px;font-weight:600;margin:0 0 12px}
+  ul.opts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+  ul.opts li{border:1px solid var(--line);border-radius:10px;padding:11px 14px 11px 42px;position:relative;background:#fff;font-size:15px}
+  ul.opts li::before{position:absolute;left:13px;top:11px;font-weight:700;font-size:15px;width:18px;text-align:center}
+  ul.opts li.ok{background:var(--ok-bg);border-color:#bcd9c8}
+  ul.opts li.ok::before{content:"✓";color:var(--ok)}
+  ul.opts li.no{background:var(--no-bg);border-color:#e6c3bf}
+  ul.opts li.no::before{content:"✕";color:var(--no)}
+  ul.opts li .why{display:block;color:var(--ink-soft);font-size:13.5px;margin-top:3px}
+
+  .tbl-wrap{overflow-x:auto;margin:14px 0}
+  table{border-collapse:collapse;width:100%;font-size:14.5px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  th,td{padding:10px 13px;text-align:left;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  thead th{background:var(--ink);color:#fff;font-family:var(--sans);font-weight:600;font-size:12.5px;letter-spacing:.03em}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:nth-child(even){background:var(--paper)}
+  td.k{font-family:var(--mono);font-size:13px}
+  td.num,th.num{font-family:var(--mono);font-size:13px;text-align:right}
+  th.num{font-family:var(--sans)}
+  tr.tot td{font-weight:700;border-top:2px solid var(--line);background:var(--paper-2)}
+  tr.sub td{font-weight:600;color:var(--accent)}
+  tr.neg td.num{color:var(--no)}
+  .pill{display:inline-block;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:999px;font-weight:600}
+  .pill.s{background:var(--ok-bg);color:var(--ok)}
+  .pill.m{background:var(--gold-soft);color:var(--gold)}
+  .pill.w{background:var(--no-bg);color:var(--no)}
+
+  nav.toc{margin:22px 0 0}
+  nav.toc ol{margin:0;padding-left:20px;columns:2;column-gap:40px;font-size:14.5px}
+  nav.toc li{margin:0 0 6px;break-inside:avoid}
+  nav.toc a{text-decoration:none;color:var(--ink-soft)}
+  nav.toc a:hover{color:var(--accent)}
+
+  pre{background:#11201c;color:#e7f0ec;border-radius:12px;padding:18px 20px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.55;margin:14px 0}
+  pre .c{color:#7fa99a}
+  code{font-family:var(--mono);font-size:.88em;background:var(--paper-2);padding:1px 6px;border-radius:5px}
+  .formula{font-family:var(--mono);font-size:13.5px;background:var(--paper-2);border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:8px 0}
+
+  footer.doc{padding:34px 0 0;color:var(--ink-soft);font-size:13.5px;font-family:var(--mono)}
+
+  @media (max-width:620px){nav.toc ol{columns:1}.wrap{padding:0 18px 60px}}
+  @media print{body{background:#fff}.card,table,pre,ul.opts li{box-shadow:none}section{break-inside:avoid-page}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="doc">
+    <p class="eyebrow">Especificação Técnico-Pedagógica · spec_modulo_5.html</p>
+    <h1>Módulo 5 — Análise da Demonstração do Resultado (DRE)</h1>
+    <p class="sub">Laboratório de Análise de Demonstrações Financeiras · Graduação</p>
+    <div class="meta">
+      <span>Stack: Next.js · TypeScript · Vercel</span>
+      <span>Aula 5 de 15 · 90 min</span>
+      <span>Público: graduandos sem experiência prévia</span>
+      <span>Versão: 1.0 (spec)</span>
+    </div>
+    <nav class="toc" aria-label="Sumário">
+      <ol>
+        <li><a href="#visao">Visão geral e estrutura</a></li>
+        <li><a href="#dataset">DRE-base, margens e fórmulas</a></li>
+        <li><a href="#motor">Motor de avaliação</a></li>
+        <li><a href="#c1">Cenário 1 — A formação do lucro</a></li>
+        <li><a href="#c2">Cenário 2 — As margens</a></li>
+        <li><a href="#c3">Cenário 3 — Lucro sobe, margem cai</a></li>
+        <li><a href="#c4">Cenário 4 — EBITDA e resultados recorrentes</a></li>
+        <li><a href="#result">ResultPanel</a></li>
+        <li><a href="#nav">Navegação e gamificação</a></li>
+        <li><a href="#dados">Estrutura de dados sugerida</a></li>
+        <li><a href="#resumo">Resumo dos cenários</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <!-- ============ 1. VISÃO GERAL ============ -->
+  <section id="visao">
+    <p class="sec-num">01</p>
+    <h2>Visão geral e estrutura</h2>
+    <p class="lead">Se o Módulo 4 leu a posição (Balanço), o Módulo 5 lê o desempenho (DRE). O aluno percorre a "cascata" da receita ao lucro líquido, calcula e interpreta margens, e descobre que <strong>lucro maior nem sempre é desempenho melhor</strong>. Todo o módulo usa a mesma <strong>DRE-base</strong> da Comercial Aurora S.A., articulada com o balanço do módulo anterior.</p>
+
+    <div class="card">
+      <h4 style="margin-top:0">Estrutura do módulo</h4>
+      <ul style="margin:0;padding-left:20px">
+        <li><strong>4 cenários</strong>, um por exercício da Aula 5: 2 Intermediários, 1 Avançado e 1 Super Desafio.</li>
+        <li><strong>Árvore de decisão</strong> em 4 etapas por cenário (3 etapas de decisão + 1 etapa de resolução).</li>
+        <li><strong>3 ramificações</strong> em cada etapa: 1 correta e 2 distratoras plausíveis.</li>
+        <li><strong>3 cenários distintos</strong> na resolução final (A, B, C).</li>
+        <li><strong>ResultPanel</strong> com feedback, explicação didática e contrafactual.</li>
+      </ul>
+    </div>
+
+    <div class="note">
+      <b>Princípio de elaboração das alternativas (crítico):</b> as três opções de cada etapa têm <b>tamanho e estrutura semelhantes</b>, frequentemente com o mesmo início (ex.: "Receita líquida menos…"). O aluno escolhe pela <b>essência</b>, não pela forma; algumas distratoras só caem ao conferir os números da DRE-base. Recomenda-se <b>embaralhar a ordem</b> na renderização.</div>
+
+    <h4>Mapa Exercício → Cenário</h4>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:42px">#</th><th>Exercício da Aula 5</th><th>Cenário do módulo</th><th style="width:130px">Dificuldade</th></tr></thead>
+      <tbody>
+        <tr><td class="k">1</td><td>Entender a formação do lucro</td><td>A formação do lucro</td><td><span class="badge b-int">Intermediário</span></td></tr>
+        <tr><td class="k">2</td><td>Calcular e interpretar margens</td><td>As margens</td><td><span class="badge b-int">Intermediário</span></td></tr>
+        <tr><td class="k">3</td><td>Lucro crescente × margem decrescente; lucro contábil × desempenho econômico</td><td>Lucro sobe, margem cai</td><td><span class="badge b-adv">Avançado</span></td></tr>
+        <tr><td class="k">4</td><td>EBITDA e resultados recorrentes</td><td>EBITDA e resultados recorrentes</td><td><span class="badge b-sup">Super Desafio</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <!-- ============ 2. DATASET ============ -->
+  <section id="dataset">
+    <p class="sec-num">02</p>
+    <h2>DRE-base, margens e fórmulas</h2>
+    <p>Demonstração do Resultado simplificada (formato gerencial) da <strong>Comercial Aurora S.A.</strong>, em R$ milhões. É o dataset principal do módulo.</p>
+
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Demonstração do Resultado</th><th class="num">R$ mi</th><th class="num">% Receita</th></tr></thead>
+      <tbody>
+        <tr><td>Receita líquida</td><td class="num">50,0</td><td class="num">100%</td></tr>
+        <tr class="neg"><td>(−) Custo das mercadorias vendidas (CMV)</td><td class="num">(33,0)</td><td class="num">66%</td></tr>
+        <tr class="sub"><td>= Lucro bruto</td><td class="num">17,0</td><td class="num">34%</td></tr>
+        <tr class="neg"><td>(−) Despesas com vendas</td><td class="num">(5,0)</td><td class="num">10%</td></tr>
+        <tr class="neg"><td>(−) Despesas administrativas</td><td class="num">(3,0)</td><td class="num">6%</td></tr>
+        <tr class="sub"><td>= EBITDA</td><td class="num">9,0</td><td class="num">18%</td></tr>
+        <tr class="neg"><td>(−) Depreciação e amortização</td><td class="num">(2,0)</td><td class="num">4%</td></tr>
+        <tr class="sub"><td>= Lucro operacional (EBIT)</td><td class="num">7,0</td><td class="num">14%</td></tr>
+        <tr class="neg"><td>(−) Resultado financeiro líquido</td><td class="num">(1,5)</td><td class="num">3%</td></tr>
+        <tr class="neg"><td>(−) IR e CSLL</td><td class="num">(1,5)</td><td class="num">3%</td></tr>
+        <tr class="tot"><td>= Lucro líquido</td><td class="num">4,0</td><td class="num">8%</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h4>Margens e fórmulas</h4>
+    <div class="formula">Margem bruta = Lucro bruto ÷ Receita = 17 ÷ 50 = <b>34%</b></div>
+    <div class="formula">Margem EBITDA = EBITDA ÷ Receita = 9 ÷ 50 = <b>18%</b></div>
+    <div class="formula">Margem operacional (EBIT) = Lucro operacional ÷ Receita = 7 ÷ 50 = <b>14%</b></div>
+    <div class="formula">Margem líquida = Lucro líquido ÷ Receita = 4 ÷ 50 = <b>8%</b></div>
+    <div class="formula">EBITDA = Lucro operacional + Depreciação e amortização = 7 + 2 = <b>9</b></div>
+
+    <h4>Caso de dois anos (usado no Cenário 3)</h4>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Indicador</th><th class="num">Ano 1</th><th class="num">Ano 2</th><th class="num">Variação</th></tr></thead>
+      <tbody>
+        <tr><td>Receita líquida</td><td class="num">40,0</td><td class="num">50,0</td><td class="num">+25%</td></tr>
+        <tr><td>Lucro bruto (margem)</td><td class="num">14,4 (36%)</td><td class="num">17,0 (34%)</td><td class="num">−2 p.p.</td></tr>
+        <tr><td>Lucro líquido (margem)</td><td class="num">3,6 (9%)</td><td class="num">4,0 (8%)</td><td class="num">−1 p.p.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:14px;color:var(--ink-soft)">O lucro líquido cresceu +11% (3,6 → 4,0), mas as margens caíram: lucro maior, eficiência menor.</p>
+  </section>
+
+  <!-- ============ 3. MOTOR DE AVALIAÇÃO ============ -->
+  <section id="motor">
+    <p class="sec-num">03</p>
+    <h2>Motor de avaliação</h2>
+    <p>Pontuação por <strong>acerto conceitual</strong> em cada etapa de decisão. A Etapa 4 (resolução) é expositiva e não pontua. Os cálculos vêm pré-computados da DRE-base — o aluno interpreta.</p>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Tipo de resposta</th><th>Pontuação</th><th>Quando aplicar</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Correta</strong></td><td class="k">100% da etapa</td><td>Opção que interpreta corretamente a formação do lucro, a margem ou o EBITDA.</td></tr>
+        <tr><td><strong>Parcialmente aceitável</strong></td><td class="k">50% da etapa</td><td>Opção defensável, porém incompleta (uso pontual).</td></tr>
+        <tr><td><strong>Incorreta</strong></td><td class="k">0</td><td>Opção que erra a interpretação ou contraria os números da DRE.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Cada etapa vale <code>100</code> pontos; o score do cenário soma as etapas; o total acumula entre os 4 cenários. Renderizar opções com <code>shuffle</code>.</p>
+  </section>
+
+  <!-- ============ CENÁRIO 1 ============ -->
+  <section id="c1">
+    <p class="sec-num">04</p>
+    <div class="scn-head"><h2 style="margin:0">Cenário 1 — A formação do lucro</h2><span class="badge b-int">Intermediário</span></div>
+    <p style="color:var(--ink-soft);margin-top:10px"><em>Conceito-chave: a DRE é uma cascata — cada nível subtrai um tipo de gasto e revela onde o lucro se forma.</em></p>
+
+    <h4>Contexto</h4>
+    <p>O aluno percorre a DRE-base da Aurora, de cima para baixo, entendendo o que cada subtração representa — da receita ao lucro líquido.</p>
+
+    <div class="step">
+      <p class="step-label">Etapa 1 — Chegando ao lucro bruto</p>
+      <p class="step-q">O lucro bruto da Aurora (R$ 17 mi) resulta de qual subtração?</p>
+      <ul class="opts">
+        <li class="ok">Receita líquida menos o custo das mercadorias vendidas (CMV).<span class="why">O lucro bruto isola a margem sobre o que foi vendido, antes de qualquer despesa.</span></li>
+        <li class="no">Receita líquida menos todas as despesas operacionais do período.<span class="why">Isso leva ao lucro operacional (EBIT), não ao lucro bruto.</span></li>
+        <li class="no">Receita líquida menos os impostos sobre o lucro do período.<span class="why">Os impostos entram lá embaixo, perto do lucro líquido.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 2 — Do lucro bruto ao operacional</p>
+      <p class="step-q">Entre o lucro bruto (17) e o lucro operacional/EBIT (7), o que foi subtraído?</p>
+      <ul class="opts">
+        <li class="ok">As despesas de vender e administrar, mais a depreciação e amortização.<span class="why">São os gastos de operar o negócio, fora o custo direto do produto.</span></li>
+        <li class="no">As despesas financeiras com os juros da dívida onerosa da empresa.<span class="why">Os juros vêm depois do EBIT, já no resultado financeiro.</span></li>
+        <li class="no">Os impostos sobre o lucro e a distribuição aos acionistas da empresa.<span class="why">Impostos vêm depois; distribuição de lucro nem passa pela DRE.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 3 — Do operacional ao líquido</p>
+      <p class="step-q">Do lucro operacional (7) ao lucro líquido (4), o que entra na conta?</p>
+      <ul class="opts">
+        <li class="ok">O resultado financeiro (juros) e os impostos sobre o lucro do período.<span class="why">São os dois últimos degraus da cascata, fora da operação.</span></li>
+        <li class="no">O custo das mercadorias vendidas e as despesas com a força de vendas.<span class="why">Esses já foram subtraídos lá em cima; não entram de novo.</span></li>
+        <li class="no">As receitas de vendas e os abatimentos concedidos sobre o faturamento.<span class="why">A receita está no topo da DRE; não reaparece perto do lucro líquido.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 4 — Resolução: a cascata da DRE</p>
+      <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:42px"></th><th>Degrau</th><th>Conta</th></tr></thead>
+        <tbody>
+          <tr><td class="k">A</td><td>Receita → Lucro bruto</td><td>50 − 33 (CMV) = 17</td></tr>
+          <tr><td class="k">B</td><td>Lucro bruto → EBIT</td><td>17 − 8 (desp. op.) − 2 (D&amp;A) = 7</td></tr>
+          <tr><td class="k">C</td><td>EBIT → Lucro líquido</td><td>7 − 1,5 (financeiro) − 1,5 (impostos) = 4</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note"><b>Fechamento:</b> a DRE é uma <b>cascata</b>. Cada degrau isola um tipo de gasto — e mostra onde o lucro se forma e onde ele "vaza".</div>
+    </div>
+  </section>
+
+  <!-- ============ CENÁRIO 2 ============ -->
+  <section id="c2">
+    <p class="sec-num">05</p>
+    <div class="scn-head"><h2 style="margin:0">Cenário 2 — As margens</h2><span class="badge b-int">Intermediário</span></div>
+    <p style="color:var(--ink-soft);margin-top:10px"><em>Conceito-chave: margem mede quanto de cada real de receita "sobra" em cada nível da DRE.</em></p>
+
+    <h4>Contexto</h4>
+    <p>O aluno interpreta as margens da Aurora (bruta 34%, EBITDA 18%, operacional 14%, líquida 8%) e descobre que cada uma responde a uma pergunta diferente.</p>
+
+    <div class="step">
+      <p class="step-label">Etapa 1 — O que a margem bruta revela</p>
+      <p class="step-q">A margem bruta da Aurora é 34%. O que ela mede?</p>
+      <ul class="opts">
+        <li class="ok">Quanto sobra da receita após o custo do produto, antes das demais despesas.<span class="why">Mede a eficiência na produção/compra do que se vende.</span></li>
+        <li class="no">Quanto sobra da receita após todas as despesas e os impostos do período.<span class="why">Isso é a margem líquida, não a bruta.</span></li>
+        <li class="no">Quanto sobra da receita após os juros da dívida onerosa da empresa.<span class="why">Os juros nem entram no cálculo da margem bruta.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 2 — Operacional contra líquida</p>
+      <p class="step-q">A margem operacional é 14% e a líquida é 8%. O que explica a diferença de 6 pontos?</p>
+      <ul class="opts">
+        <li class="ok">O resultado financeiro e os impostos, que incidem depois do lucro operacional.<span class="why">São os dois degraus entre o EBIT e o lucro líquido.</span></li>
+        <li class="no">O custo das mercadorias vendidas, que reduz a receita logo no início da DRE.<span class="why">O CMV já está embutido bem antes do lucro operacional.</span></li>
+        <li class="no">As despesas de vendas e administrativas, já contidas no lucro operacional.<span class="why">Essas já foram descontadas para chegar ao EBIT; não explicam o vão.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 3 — Qual margem para qual pergunta</p>
+      <p class="step-q">Para avaliar a eficiência da operação, isolando como a empresa se financia, qual margem usar?</p>
+      <ul class="opts">
+        <li class="ok">A margem operacional (ou EBITDA), que independe da estrutura de financiamento.<span class="why">Antes dos juros, ela compara operações mesmo com dívidas diferentes.</span></li>
+        <li class="no">A margem líquida, que já embute os juros da dívida e a carga tributária.<span class="why">Ela mistura operação e financiamento — não isola a eficiência operacional.</span></li>
+        <li class="no">A margem bruta, que considera apenas o custo direto do produto vendido.<span class="why">É estreita demais: ignora as despesas de operar o negócio.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 4 — Resolução: o que cada margem conta</p>
+      <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:42px"></th><th>Margem</th><th>Pergunta que responde</th></tr></thead>
+        <tbody>
+          <tr><td class="k">A</td><td>Bruta (34%)</td><td>Eficiência na produção/compra do que se vende</td></tr>
+          <tr><td class="k">B</td><td>Operacional / EBITDA (14% / 18%)</td><td>Eficiência da operação, antes de financiamento e impostos</td></tr>
+          <tr><td class="k">C</td><td>Líquida (8%)</td><td>O que sobra para os sócios, depois de tudo</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note"><b>Fechamento:</b> cada margem responde a uma pergunta diferente. Lidas juntas, mostram <b>onde o resultado se forma e onde ele se perde</b>.</div>
+    </div>
+  </section>
+
+  <!-- ============ CENÁRIO 3 ============ -->
+  <section id="c3">
+    <p class="sec-num">06</p>
+    <div class="scn-head"><h2 style="margin:0">Cenário 3 — Lucro sobe, margem cai</h2><span class="badge b-adv">Avançado</span></div>
+    <p style="color:var(--ink-soft);margin-top:10px"><em>Conceito-chave: lucro maior em reais pode esconder deterioração da rentabilidade. Lucro contábil × desempenho econômico.</em></p>
+
+    <h4>Contexto</h4>
+    <p>A Aurora cresceu a receita de <strong>R$ 40 mi para R$ 50 mi</strong> e o lucro de <strong>R$ 3,6 mi para R$ 4,0 mi</strong>. A diretoria comemora o "lucro recorde". O aluno olha as margens antes de aplaudir. <em>(Ver o caso de dois anos na seção do dataset.)</em></p>
+
+    <div class="step">
+      <p class="step-label">Etapa 1 — O primeiro olhar</p>
+      <p class="step-q">O lucro subiu de 3,6 para 4,0 mi. Antes de comemorar, o que checar?</p>
+      <ul class="opts">
+        <li class="ok">Se a margem acompanhou o crescimento ou se ela encolheu no caminho.<span class="why">Lucro absoluto cresce com volume; a margem revela se a empresa ficou melhor.</span></li>
+        <li class="no">Se o lucro foi maior que o do principal concorrente do setor naquele ano.<span class="why">Comparar vem depois; primeiro, entender a própria rentabilidade.</span></li>
+        <li class="no">Se o lucro foi divulgado dentro do prazo exigido pela autoridade reguladora.<span class="why">O prazo não diz nada sobre a qualidade do crescimento.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 2 — A constatação</p>
+      <p class="step-q">A margem líquida caiu de 9% para 8% e a bruta de 36% para 34%. O que isso indica?</p>
+      <ul class="opts">
+        <li class="ok">A empresa cresceu vendendo mais barato ou com custo maior — a eficiência caiu.<span class="why">Mais receita, menos margem: o crescimento veio às custas da rentabilidade.</span></li>
+        <li class="no">A empresa cresceu de forma saudável, pois o lucro absoluto de fato aumentou.<span class="why">O lucro subiu, mas a margem caindo desmente o "crescimento saudável".</span></li>
+        <li class="no">A empresa manteve a eficiência, pois margem e lucro são a mesma informação.<span class="why">Não são: lucro é valor absoluto; margem é rentabilidade relativa.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 3 — Lucro contábil × desempenho econômico</p>
+      <p class="step-q">Por que o "lucro recorde" pode mascarar um desempenho econômico pior?</p>
+      <ul class="opts">
+        <li class="ok">Porque crescer com margem menor pode destruir valor se não cobrir o custo do capital.<span class="why">Mais lucro contábil não garante retorno acima do custo do capital empregado.</span></li>
+        <li class="no">Porque o lucro contábil é sempre irreal e nunca reflete a operação da empresa.<span class="why">Exagero: o lucro contábil é útil; o ponto é complementá-lo com a margem.</span></li>
+        <li class="no">Porque margem decrescente significa, necessariamente, prejuízo no ano seguinte.<span class="why">Não há "necessariamente": margem menor é alerta, não sentença de prejuízo.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 4 — Resolução: dois anos, duas leituras</p>
+      <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:42px"></th><th>Leitura</th><th>O que enxerga</th><th style="width:90px"></th></tr></thead>
+        <tbody>
+          <tr><td class="k">A</td><td>De capa</td><td>"Lucro recorde: +11% (3,6 → 4,0)"</td><td><span class="pill w">ingênua</span></td></tr>
+          <tr><td class="k">B</td><td>De margem</td><td>Líquida 9% → 8%; bruta 36% → 34% (eficiência caiu)</td><td><span class="pill s">crítica</span></td></tr>
+          <tr><td class="k">C</td><td>Econômica</td><td>Crescer com margem menor: criou ou destruiu valor?</td><td><span class="pill s">profunda</span></td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note"><b>Fechamento:</b> lucro maior em reais não significa empresa melhor. A <b>margem</b> mostra a qualidade do crescimento — e o desempenho econômico vai além do lucro contábil.</div>
+    </div>
+  </section>
+
+  <!-- ============ CENÁRIO 4 ============ -->
+  <section id="c4">
+    <p class="sec-num">07</p>
+    <div class="scn-head"><h2 style="margin:0">Cenário 4 — EBITDA e resultados recorrentes</h2><span class="badge b-sup">Super Desafio</span></div>
+    <p style="color:var(--ink-soft);margin-top:10px"><em>Conceito-chave: o EBITDA aproxima a geração operacional, mas ignora capex, juros e impostos — e precisa ser ajustado por itens não recorrentes.</em></p>
+
+    <h4>Contexto</h4>
+    <p>A Aurora reporta <strong>EBITDA de R$ 9 mi</strong>. Um analista quer usá-lo para avaliar a geração da operação — mas descobre que, dentro desse valor, há um <strong>ganho não recorrente de R$ 1,5 mi</strong> (reversão de provisão). O aluno entende o que o EBITDA inclui, ignora e como ajustá-lo.</p>
+
+    <div class="step">
+      <p class="step-label">Etapa 1 — O que o EBITDA mede</p>
+      <p class="step-q">O EBITDA da Aurora é R$ 9 mi. O que ele busca aproximar?</p>
+      <ul class="opts">
+        <li class="ok">A geração de caixa da operação, antes de juros, impostos, depreciação e amortização.<span class="why">É um proxy de quanto a operação gera, isolando financiamento e itens não-caixa.</span></li>
+        <li class="no">O lucro final disponível aos sócios, depois de juros, impostos e investimentos.<span class="why">Isso é o lucro líquido (e nem desconta capex); o EBITDA vem bem antes.</span></li>
+        <li class="no">O total de dinheiro que efetivamente entrou no caixa da empresa no período.<span class="why">EBITDA não é caixa: ignora capex e variações de capital de giro.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 2 — O que o EBITDA ignora</p>
+      <p class="step-q">Por que o EBITDA pode superestimar a real geração de caixa?</p>
+      <ul class="opts">
+        <li class="ok">Porque ignora juros, impostos e, sobretudo, os investimentos (capex) que a operação exige.<span class="why">Uma empresa com EBITDA alto e capex pesado pode gerar pouco caixa livre.</span></li>
+        <li class="no">Porque inclui a depreciação, que seria uma saída de caixa recorrente da empresa.<span class="why">Falso: a depreciação é justamente somada de volta; e não é saída de caixa.</span></li>
+        <li class="no">Porque desconta os juros duas vezes, inflando de forma artificial o resultado.<span class="why">Falso: o EBITDA não desconta juros nenhuma vez — ele vem antes deles.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 3 — Resultado recorrente</p>
+      <p class="step-q">O EBITDA de R$ 9 mi inclui um ganho não recorrente de R$ 1,5 mi. Como tratá-lo?</p>
+      <ul class="opts">
+        <li class="ok">Excluí-lo para achar o EBITDA recorrente de R$ 7,5 mi, base para projetar o futuro.<span class="why">A projeção deve usar o que se repete, não um ganho de uma vez só.</span></li>
+        <li class="no">Mantê-lo no EBITDA, pois todo ganho do período compõe a geração operacional.<span class="why">Ganho não recorrente não é operacional nem se repete; distorce a projeção.</span></li>
+        <li class="no">Somá-lo de novo no próximo ano, pois o efeito do ganho tende a se repetir.<span class="why">Por definição, um item não recorrente não se repete no ano seguinte.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 4 — Resolução: o EBITDA sob três olhares</p>
+      <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:42px"></th><th>Olhar</th><th>Valor / leitura</th></tr></thead>
+        <tbody>
+          <tr><td class="k">A</td><td>EBITDA reportado</td><td>R$ 9 mi (inclui R$ 1,5 mi não recorrente)</td></tr>
+          <tr><td class="k">B</td><td>EBITDA recorrente</td><td>R$ 7,5 mi — base honesta para projeção</td></tr>
+          <tr><td class="k">C</td><td>Limite do EBITDA</td><td>Ignora capex, juros e impostos — não é "o caixa" da empresa</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note"><b>Fechamento:</b> o EBITDA é ótimo para comparar operações, mas <b>não é caixa nem lucro</b>. Ajustá-lo por itens não recorrentes e lembrar do que ele ignora (capex!) separa o uso ingênuo do uso crítico.</div>
+    </div>
+  </section>
+
+  <!-- ============ 8. RESULT PANEL ============ -->
+  <section id="result">
+    <p class="sec-num">08</p>
+    <h2>ResultPanel</h2>
+    <p>Ao concluir um cenário, o painel de resultado exibe:</p>
+    <ul style="padding-left:20px">
+      <li><strong>Score do cenário</strong> (soma das etapas), com selo de desempenho (ex.: "Lendo a DRE", "Analista de resultado").</li>
+      <li><strong>Quadro de resolução</strong> (a tabela A/B/C da Etapa 4), substituindo o diagrama de payoff do exemplo de derivativos.</li>
+      <li><strong>Explicação didática</strong> retomando por que a opção correta de cada etapa é a correta — com os números da DRE-base.</li>
+      <li><strong>Contrafactual</strong>: "E se você tivesse olhado só o lucro absoluto?" — mostra a conclusão equivocada, reforçando o aprendizado.</li>
+    </ul>
+    <div class="note"><b>Visual opcional (leve):</b> um <b>gráfico em cascata (waterfall)</b> da DRE — da receita ao lucro líquido, com cada subtração — é altamente didático no Cenário 1. No Cenário 3, duas barras de margem (ano 1 × ano 2) tornam visível a compressão. Pode usar <code>Recharts</code> ou divs; não é obrigatório.</div>
+  </section>
+
+  <!-- ============ 9. NAVEGAÇÃO ============ -->
+  <section id="nav">
+    <p class="sec-num">09</p>
+    <h2>Navegação e gamificação <span style="font-size:15px;font-weight:400;color:var(--ink-soft)">(transversais a todos os módulos)</span></h2>
+    <h4>Navegação bidirecional</h4>
+    <ul style="padding-left:20px">
+      <li>Botão "← Etapa anterior" para voltar um passo.</li>
+      <li>Barra de progresso clicável (segmentos concluídos são navegáveis).</li>
+      <li>Ao revisitar uma etapa, um banner mostra a resposta anterior e destaca o botão selecionado.</li>
+      <li>Re-responder descarta as respostas subsequentes e recalcula a pontuação.</li>
+    </ul>
+    <h4>Gamificação</h4>
+    <ul style="padding-left:20px">
+      <li>Pontuação por etapa (correta = máximo; parcial = metade; errada = 0).</li>
+      <li>Barra de progresso com score acumulado dentro do cenário.</li>
+      <li>Score por cenário na tela inicial do módulo.</li>
+      <li>Score total acumulado (todos os cenários do módulo, somável com outros módulos do app).</li>
+    </ul>
+  </section>
+
+  <!-- ============ 10. ESTRUTURA DE DADOS ============ -->
+  <section id="dados">
+    <p class="sec-num">10</p>
+    <h2>Estrutura de dados sugerida</h2>
+    <p>Mesmo modelo dos módulos anteriores, com uma <code>dre</code> compartilhada e margens/EBITDA pré-calculados:</p>
+<pre><span class="c">// data/modulo5.ts</span>
+const dre = {
+  receitaLiquida: 50, cmv: -33, lucroBruto: 17,
+  despVendas: -5, despAdmin: -3, ebitda: 9,
+  depreciacaoAmortizacao: -2, ebit: 7,
+  resultadoFinanceiro: -1.5, impostos: -1.5, lucroLiquido: 4,
+};
+
+const margens = { bruta: 0.34, ebitda: 0.18, operacional: 0.14, liquida: 0.08 };
+
+const casoDoisAnos = {
+  ano1: { receita: 40, lucroBruto: 14.4, mb: 0.36, lucroLiquido: 3.6, ml: 0.09 },
+  ano2: { receita: 50, lucroBruto: 17.0, mb: 0.34, lucroLiquido: 4.0, ml: 0.08 },
+};
+
+const ebitdaRecorrente = { reportado: 9, naoRecorrente: 1.5, recorrente: 7.5 };
+
+<span class="c">// Scenario[], Step[], Option[] reaproveitam os tipos dos módulos 1–4.</span>
+<span class="c">// label das opções: manter paralelismo; renderizar com shuffle.</span></pre>
+    <div class="note"><b>Observação para implementação:</b> a DRE articula-se com o balanço do Módulo 4 (mesma Aurora). Se quiser um modo "calcule você mesmo", adicione inputs para CMV/despesas e valide o lucro contra <code>dre.lucroLiquido</code>. O waterfall do Cenário 1 pode ser um campo <code>interactive?: "dreWaterfall"</code> lido pelo ResultPanel.</div>
+  </section>
+
+  <!-- ============ 11. RESUMO ============ -->
+  <section id="resumo" style="border-bottom:none">
+    <p class="sec-num">11</p>
+    <h2>Resumo dos 4 cenários</h2>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:34px">#</th><th>Título</th><th style="width:120px">Dificuldade</th><th>Conceito-chave</th></tr></thead>
+      <tbody>
+        <tr><td class="k">1</td><td>A formação do lucro</td><td><span class="badge b-int">Intermediário</span></td><td>A cascata da DRE: receita → bruto → EBIT → líquido</td></tr>
+        <tr><td class="k">2</td><td>As margens</td><td><span class="badge b-int">Intermediário</span></td><td>Bruta, operacional/EBITDA e líquida: cada uma responde a uma pergunta</td></tr>
+        <tr><td class="k">3</td><td>Lucro sobe, margem cai</td><td><span class="badge b-adv">Avançado</span></td><td>Lucro absoluto × rentabilidade; lucro contábil × desempenho econômico</td></tr>
+        <tr><td class="k">4</td><td>EBITDA e resultados recorrentes</td><td><span class="badge b-sup">Super Desafio</span></td><td>O que o EBITDA mede, o que ignora (capex) e o ajuste por não recorrentes</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <footer class="doc">
+    spec_modulo_5.html · Laboratório de Análise de Demonstrações Financeiras · Aula 5 — DRE
+  </footer>
+
+</div>
+</body>
+</html>

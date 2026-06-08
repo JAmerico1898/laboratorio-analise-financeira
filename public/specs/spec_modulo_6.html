@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Especificação — Módulo 6 | Laboratório de Análise de Demonstrações Financeiras</title>
+<style>
+  :root{
+    --ink:#1b2430;--ink-soft:#46586b;--paper:#fbfaf6;--paper-2:#f3f1ea;
+    --line:#dcd7cb;--line-soft:#e8e4da;--accent:#0f5c4a;--accent-soft:#e4efe9;
+    --gold:#9a6b14;--gold-soft:#f5edd9;--ok:#15663f;--ok-bg:#e7f1ea;--no:#9e261c;--no-bg:#f6e6e4;
+    --shadow:0 1px 2px rgba(27,36,48,.06), 0 8px 24px rgba(27,36,48,.05);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    --sans:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:"SFMono-Regular",ui-monospace,"Cascadia Code",Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:radial-gradient(1200px 600px at 85% -10%, var(--accent-soft), transparent 55%),var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:880px;margin:0 auto;padding:0 24px 96px}
+
+  header.doc{padding:64px 0 36px;border-bottom:2px solid var(--ink);margin-bottom:8px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+  header.doc h1{font-family:var(--serif);font-weight:600;font-size:clamp(30px,5vw,46px);line-height:1.08;letter-spacing:-.01em;margin:0 0 10px}
+  header.doc .sub{font-family:var(--serif);font-style:italic;font-size:20px;color:var(--ink-soft);margin:0 0 22px}
+  .meta{display:flex;flex-wrap:wrap;gap:10px;font-family:var(--mono);font-size:12.5px;color:var(--ink-soft)}
+  .meta span{background:var(--paper-2);border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+
+  section{padding:40px 0;border-bottom:1px solid var(--line-soft)}
+  .sec-num{font-family:var(--mono);font-size:13px;color:var(--gold);letter-spacing:.1em}
+  h2{font-family:var(--serif);font-weight:600;font-size:28px;line-height:1.15;margin:6px 0 18px;letter-spacing:-.01em}
+  h3{font-family:var(--serif);font-weight:600;font-size:21px;margin:28px 0 10px}
+  h4{font-family:var(--sans);font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:24px 0 8px}
+  p{margin:0 0 14px}
+  .lead{font-size:17.5px;color:var(--ink-soft)}
+  strong{color:var(--ink)}
+  a{color:var(--accent)}
+
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:var(--shadow);margin:18px 0}
+  .note{background:var(--gold-soft);border:1px solid #e7d9b0;border-left:4px solid var(--gold);border-radius:8px;padding:14px 18px;margin:18px 0;font-size:15px}
+  .note b{color:var(--gold)}
+
+  .scn-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;border-left:4px solid var(--accent);padding-left:16px;margin:8px 0 4px}
+  .badge{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:6px;border:1px solid var(--line);background:var(--paper-2);color:var(--ink-soft);white-space:nowrap}
+  .badge.b-bas{background:#e6eef5;border-color:#c3d4e3;color:#2c5478}
+  .badge.b-int{background:var(--accent-soft);border-color:#bcd9cf;color:var(--accent)}
+  .badge.b-adv{background:var(--gold-soft);border-color:#e7d9b0;color:var(--gold)}
+  .badge.b-sup{background:#efe6f3;border-color:#d6c2e0;color:#6c3a86}
+
+  .step{margin:18px 0}
+  .step-label{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--ink-soft);text-transform:uppercase;margin-bottom:8px}
+  .step-q{font-family:var(--serif);font-size:18px;font-weight:600;margin:0 0 12px}
+  ul.opts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+  ul.opts li{border:1px solid var(--line);border-radius:10px;padding:11px 14px 11px 42px;position:relative;background:#fff;font-size:15px}
+  ul.opts li::before{position:absolute;left:13px;top:11px;font-weight:700;font-size:15px;width:18px;text-align:center}
+  ul.opts li.ok{background:var(--ok-bg);border-color:#bcd9c8}
+  ul.opts li.ok::before{content:"✓";color:var(--ok)}
+  ul.opts li.no{background:var(--no-bg);border-color:#e6c3bf}
+  ul.opts li.no::before{content:"✕";color:var(--no)}
+  ul.opts li .why{display:block;color:var(--ink-soft);font-size:13.5px;margin-top:3px}
+
+  .tbl-wrap{overflow-x:auto;margin:14px 0}
+  table{border-collapse:collapse;width:100%;font-size:14.5px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  th,td{padding:10px 13px;text-align:left;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  thead th{background:var(--ink);color:#fff;font-family:var(--sans);font-weight:600;font-size:12.5px;letter-spacing:.03em}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:nth-child(even){background:var(--paper)}
+  td.k{font-family:var(--mono);font-size:13px}
+  td.num,th.num{font-family:var(--mono);font-size:13px;text-align:right}
+  th.num{font-family:var(--sans)}
+  tr.tot td{font-weight:700;border-top:2px solid var(--line);background:var(--paper-2)}
+  tr.sub td{font-weight:600;color:var(--accent);border-top:1px solid var(--line)}
+  tr.neg td.num{color:var(--no)}
+  .pill{display:inline-block;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:999px;font-weight:600}
+  .pill.s{background:var(--ok-bg);color:var(--ok)}
+  .pill.m{background:var(--gold-soft);color:var(--gold)}
+  .pill.w{background:var(--no-bg);color:var(--no)}
+
+  nav.toc{margin:22px 0 0}
+  nav.toc ol{margin:0;padding-left:20px;columns:2;column-gap:40px;font-size:14.5px}
+  nav.toc li{margin:0 0 6px;break-inside:avoid}
+  nav.toc a{text-decoration:none;color:var(--ink-soft)}
+  nav.toc a:hover{color:var(--accent)}
+
+  pre{background:#11201c;color:#e7f0ec;border-radius:12px;padding:18px 20px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.55;margin:14px 0}
+  pre .c{color:#7fa99a}
+  code{font-family:var(--mono);font-size:.88em;background:var(--paper-2);padding:1px 6px;border-radius:5px}
+  .formula{font-family:var(--mono);font-size:13.5px;background:var(--paper-2);border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:8px 0}
+
+  footer.doc{padding:34px 0 0;color:var(--ink-soft);font-size:13.5px;font-family:var(--mono)}
+
+  @media (max-width:620px){nav.toc ol{columns:1}.wrap{padding:0 18px 60px}}
+  @media print{body{background:#fff}.card,table,pre,ul.opts li{box-shadow:none}section{break-inside:avoid-page}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="doc">
+    <p class="eyebrow">Especificação Técnico-Pedagógica · spec_modulo_6.html</p>
+    <h1>Módulo 6 — Demonstração dos Fluxos de Caixa (DFC)</h1>
+    <p class="sub">Laboratório de Análise de Demonstrações Financeiras · Graduação</p>
+    <div class="meta">
+      <span>Stack: Next.js · TypeScript · Vercel</span>
+      <span>Aula 6 de 15 · 90 min</span>
+      <span>Público: graduandos sem experiência prévia</span>
+      <span>Versão: 1.0 (spec)</span>
+    </div>
+    <nav class="toc" aria-label="Sumário">
+      <ol>
+        <li><a href="#visao">Visão geral e estrutura</a></li>
+        <li><a href="#dataset">DFC-base e variações</a></li>
+        <li><a href="#motor">Motor de avaliação</a></li>
+        <li><a href="#c1">Cenário 1 — Lucro positivo, caixa negativo</a></li>
+        <li><a href="#c2">Cenário 2 — Reconstruindo o caixa</a></li>
+        <li><a href="#c3">Cenário 3 — Os três fluxos</a></li>
+        <li><a href="#c4">Cenário 4 — Qualidade do lucro no tempo</a></li>
+        <li><a href="#result">ResultPanel</a></li>
+        <li><a href="#nav">Navegação e gamificação</a></li>
+        <li><a href="#dados">Estrutura de dados sugerida</a></li>
+        <li><a href="#resumo">Resumo dos cenários</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <!-- ============ 1. VISÃO GERAL ============ -->
+  <section id="visao">
+    <p class="sec-num">01</p>
+    <h2>Visão geral e estrutura</h2>
+    <p class="lead">O Módulo 6 fecha o arco "lucro × caixa" que atravessa o curso. O aluno descobre por que uma empresa lucrativa pode ficar com menos dinheiro, reconstrói o caixa operacional pelo método indireto, separa os três fluxos (operacional, investimento, financiamento) e usa a DFC para julgar a <strong>qualidade do lucro</strong>. Tudo com a mesma <strong>Comercial Aurora S.A.</strong>, articulando a DRE (Módulo 5) e o Balanço (Módulo 4).</p>
+
+    <div class="card">
+      <h4 style="margin-top:0">Estrutura do módulo</h4>
+      <ul style="margin:0;padding-left:20px">
+        <li><strong>4 cenários</strong>, um por exercício da Aula 6: 2 Intermediários, 1 Avançado e 1 Super Desafio.</li>
+        <li><strong>Árvore de decisão</strong> em 4 etapas por cenário (3 etapas de decisão + 1 etapa de resolução).</li>
+        <li><strong>3 ramificações</strong> em cada etapa: 1 correta e 2 distratoras plausíveis.</li>
+        <li><strong>3 cenários distintos</strong> na resolução final (A, B, C).</li>
+        <li><strong>ResultPanel</strong> com feedback, explicação didática e contrafactual.</li>
+      </ul>
+    </div>
+
+    <div class="note">
+      <b>Articulação numérica:</b> a DFC deste módulo reconcilia exatamente a DRE (lucro R$ 4 mi, D&amp;A R$ 2 mi) e a variação do balanço (caixa de R$ 10 mi → R$ 6 mi). É o mesmo ano da mesma empresa — o aluno vê as três demonstrações "fecharem" entre si.</div>
+
+    <div class="note">
+      <b>Princípio de elaboração das alternativas (crítico):</b> as três opções de cada etapa têm <b>tamanho e estrutura semelhantes</b>, muitas com o mesmo início. O aluno escolhe pela <b>essência</b>, não pela forma; algumas distratoras só caem ao conferir os números. Recomenda-se <b>embaralhar a ordem</b> na renderização.</div>
+
+    <h4>Mapa Exercício → Cenário</h4>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:42px">#</th><th>Exercício da Aula 6</th><th>Cenário do módulo</th><th style="width:130px">Dificuldade</th></tr></thead>
+      <tbody>
+        <tr><td class="k">1</td><td>Lucro × caixa: empresa lucrativa com caixa negativo</td><td>Lucro positivo, caixa negativo</td><td><span class="badge b-int">Intermediário</span></td></tr>
+        <tr><td class="k">2</td><td>Reconstruir o fluxo de caixa a partir da DRE e do balanço</td><td>Reconstruindo o caixa</td><td><span class="badge b-adv">Avançado</span></td></tr>
+        <tr><td class="k">3</td><td>Fluxos operacional, investimento e financiamento; capacidade de gerar caixa</td><td>Os três fluxos</td><td><span class="badge b-int">Intermediário</span></td></tr>
+        <tr><td class="k">4</td><td>Qualidade do lucro: quando o lucro não converge para o caixa no tempo</td><td>Qualidade do lucro no tempo</td><td><span class="badge b-sup">Super Desafio</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <!-- ============ 2. DATASET ============ -->
+  <section id="dataset">
+    <p class="sec-num">02</p>
+    <h2>DFC-base e variações do balanço</h2>
+    <p>Demonstração dos Fluxos de Caixa (método indireto) da <strong>Comercial Aurora S.A.</strong> no ano, em R$ milhões. Reconcilia a DRE do Módulo 5 e o Balanço do Módulo 4.</p>
+
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Demonstração dos Fluxos de Caixa (método indireto)</th><th class="num">R$ mi</th></tr></thead>
+      <tbody>
+        <tr class="sub"><td>Fluxo de Caixa Operacional (FCO)</td><td class="num">0,0</td></tr>
+        <tr><td>Lucro líquido</td><td class="num">4,0</td></tr>
+        <tr><td>(+) Depreciação e amortização (não-caixa)</td><td class="num">2,0</td></tr>
+        <tr class="neg"><td>(−) Aumento de contas a receber</td><td class="num">(6,0)</td></tr>
+        <tr class="neg"><td>(−) Aumento de estoques</td><td class="num">(4,0)</td></tr>
+        <tr><td>(+) Aumento de fornecedores</td><td class="num">3,0</td></tr>
+        <tr><td>(+) Aumento de salários e impostos a pagar</td><td class="num">1,0</td></tr>
+        <tr class="sub"><td>Fluxo de Caixa de Investimento (FCI)</td><td class="num">(5,0)</td></tr>
+        <tr class="neg"><td>(−) Aquisição de imobilizado (capex)</td><td class="num">(5,0)</td></tr>
+        <tr class="sub"><td>Fluxo de Caixa de Financiamento (FCF)</td><td class="num">1,0</td></tr>
+        <tr><td>(+) Captação de empréstimos</td><td class="num">2,0</td></tr>
+        <tr class="neg"><td>(−) Dividendos pagos</td><td class="num">(1,0)</td></tr>
+        <tr class="tot"><td>= Variação líquida de caixa (0 − 5 + 1)</td><td class="num">(4,0)</td></tr>
+        <tr><td>Caixa inicial</td><td class="num">10,0</td></tr>
+        <tr class="tot"><td>Caixa final</td><td class="num">6,0</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h4>Variações do balanço (início → fim do ano)</h4>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Conta</th><th class="num">Início</th><th class="num">Fim</th><th class="num">Variação</th></tr></thead>
+      <tbody>
+        <tr><td>Caixa</td><td class="num">10</td><td class="num">6</td><td class="num">−4</td></tr>
+        <tr><td>Contas a receber</td><td class="num">12</td><td class="num">18</td><td class="num">+6</td></tr>
+        <tr><td>Estoques</td><td class="num">10</td><td class="num">14</td><td class="num">+4</td></tr>
+        <tr><td>Imobilizado líquido</td><td class="num">31</td><td class="num">34</td><td class="num">+3*</td></tr>
+        <tr><td>Fornecedores</td><td class="num">9</td><td class="num">12</td><td class="num">+3</td></tr>
+        <tr><td>Salários e impostos a pagar</td><td class="num">2</td><td class="num">3</td><td class="num">+1</td></tr>
+        <tr><td>Empréstimos (CP + LP)</td><td class="num">33</td><td class="num">35</td><td class="num">+2</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:14px;color:var(--ink-soft)">* Imobilizado: +3 líquido = capex de 5 − depreciação de 2.</p>
+
+    <h4>Indicadores e série de três anos (Cenário 4)</h4>
+    <div class="formula">Conversão de caixa = Caixa operacional ÷ Lucro líquido (quanto mais perto de 1, melhor a qualidade do lucro)</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Ano</th><th class="num">Lucro líquido</th><th class="num">FCO</th><th class="num">FCO ÷ Lucro</th></tr></thead>
+      <tbody>
+        <tr><td>Ano 1</td><td class="num">3,6</td><td class="num">3,4</td><td class="num">0,94</td></tr>
+        <tr><td>Ano 2 (atual)</td><td class="num">4,0</td><td class="num">0,0</td><td class="num">0,00</td></tr>
+        <tr><td>Ano 3</td><td class="num">4,4</td><td class="num">6,0</td><td class="num">1,36</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <!-- ============ 3. MOTOR DE AVALIAÇÃO ============ -->
+  <section id="motor">
+    <p class="sec-num">03</p>
+    <h2>Motor de avaliação</h2>
+    <p>Pontuação por <strong>acerto conceitual</strong> em cada etapa de decisão. A Etapa 4 (resolução) é expositiva e não pontua. Os valores vêm pré-computados da DFC-base — o aluno interpreta e classifica.</p>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Tipo de resposta</th><th>Pontuação</th><th>Quando aplicar</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Correta</strong></td><td class="k">100% da etapa</td><td>Opção que interpreta corretamente o ajuste, o fluxo ou a qualidade do lucro.</td></tr>
+        <tr><td><strong>Parcialmente aceitável</strong></td><td class="k">50% da etapa</td><td>Opção defensável, porém incompleta (uso pontual).</td></tr>
+        <tr><td><strong>Incorreta</strong></td><td class="k">0</td><td>Opção que confunde regime de competência com caixa ou erra a classificação do fluxo.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Cada etapa vale <code>100</code> pontos; o score do cenário soma as etapas; o total acumula entre os 4 cenários. Renderizar opções com <code>shuffle</code>.</p>
+  </section>
+
+  <!-- ============ CENÁRIO 1 ============ -->
+  <section id="c1">
+    <p class="sec-num">04</p>
+    <div class="scn-head"><h2 style="margin:0">Cenário 1 — Lucro positivo, caixa negativo</h2><span class="badge b-int">Intermediário</span></div>
+    <p style="color:var(--ink-soft);margin-top:10px"><em>Conceito-chave: lucro (competência) e caixa (regime de caixa) caminham separados.</em></p>
+
+    <h4>Contexto</h4>
+    <p>A Aurora lucrou <strong>R$ 4 mi</strong> no ano, mas o caixa caiu de <strong>R$ 10 mi para R$ 6 mi</strong> (−R$ 4 mi). A diretoria não entende: "como lucramos e ficamos com menos dinheiro?". O aluno desfaz o paradoxo.</p>
+
+    <div class="step">
+      <p class="step-label">Etapa 1 — A raiz do paradoxo</p>
+      <p class="step-q">Como a Aurora pode ter lucro e, ao mesmo tempo, menos caixa?</p>
+      <ul class="opts">
+        <li class="ok">Porque o lucro segue o regime de competência, e nem toda venda virou dinheiro no caixa.<span class="why">A venda a prazo gera lucro hoje, mas o caixa só entra quando o cliente paga.</span></li>
+        <li class="no">Porque houve erro na apuração: um lucro positivo sempre eleva o caixa no período.<span class="why">Não há erro; lucro e caixa divergirem é o funcionamento normal da contabilidade.</span></li>
+        <li class="no">Porque o lucro é fictício e a empresa, na verdade, teve prejuízo no ano.<span class="why">O lucro é real (competência); o problema é a conversão em caixa, não sua existência.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 2 — Onde o lucro "ficou preso"</p>
+      <p class="step-q">O lucro não virou caixa principalmente porque…</p>
+      <ul class="opts">
+        <li class="ok">As vendas a prazo e os estoques cresceram, prendendo o caixa no capital de giro.<span class="why">Recebíveis (+6) e estoques (+4) consumiram R$ 10 mi de caixa no ano.</span></li>
+        <li class="no">A depreciação consumiu o caixa que o lucro havia gerado ao longo do período.<span class="why">Falso: a depreciação é despesa não-caixa; ela não retira dinheiro do caixa.</span></li>
+        <li class="no">Os dividendos pagos superaram em muito o lucro líquido do ano da empresa.<span class="why">Falso nos números: os dividendos foram R$ 1 mi, bem abaixo do lucro de R$ 4 mi.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 3 — Competência contra caixa</p>
+      <p class="step-q">Qual frase descreve corretamente a relação entre lucro e caixa?</p>
+      <ul class="opts">
+        <li class="ok">O lucro mede o resultado pela competência; o caixa mede o dinheiro que de fato circulou.<span class="why">São duas réguas diferentes do mesmo período — daí poderem divergir.</span></li>
+        <li class="no">O lucro e o caixa medem a mesma coisa, apenas com nomes contábeis diferentes.<span class="why">Não medem: um é resultado econômico, o outro é movimentação de dinheiro.</span></li>
+        <li class="no">O caixa mede o resultado econômico; o lucro mede apenas a posição de tesouraria.<span class="why">Está invertido: o resultado econômico é o lucro; o caixa é a tesouraria.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 4 — Resolução: o ano da Aurora em três números</p>
+      <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:42px"></th><th>Régua</th><th>Resultado</th></tr></thead>
+        <tbody>
+          <tr><td class="k">A</td><td>Competência (lucro)</td><td>Lucro líquido +R$ 4 mi</td></tr>
+          <tr><td class="k">B</td><td>Caixa (regime de caixa)</td><td>Variação de caixa −R$ 4 mi (10 → 6)</td></tr>
+          <tr><td class="k">C</td><td>A ponte entre eles</td><td>Lucro preso em recebíveis (+6) e estoques (+4), mais capex e dividendos</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note"><b>Fechamento:</b> lucrar e gerar caixa são coisas diferentes. A <b>DFC é a demonstração que explica o caminho</b> de um ao outro.</div>
+    </div>
+  </section>
+
+  <!-- ============ CENÁRIO 2 ============ -->
+  <section id="c2">
+    <p class="sec-num">05</p>
+    <div class="scn-head"><h2 style="margin:0">Cenário 2 — Reconstruindo o caixa</h2><span class="badge b-adv">Avançado</span></div>
+    <p style="color:var(--ink-soft);margin-top:10px"><em>Conceito-chave: o método indireto reconstrói o caixa operacional a partir do lucro, ajustando itens não-caixa e o giro.</em></p>
+
+    <h4>Contexto</h4>
+    <p>Com a DRE (lucro R$ 4 mi, D&amp;A R$ 2 mi) e a variação do balanço, o aluno monta o <strong>Fluxo de Caixa Operacional</strong> pelo método indireto, ajuste por ajuste. <em>(Use a tabela de variações da seção do dataset.)</em></p>
+
+    <div class="step">
+      <p class="step-label">Etapa 1 — Partida e primeiro ajuste</p>
+      <p class="step-q">O método indireto parte do lucro líquido (4). Qual o primeiro ajuste — e por quê?</p>
+      <ul class="opts">
+        <li class="ok">Somar a depreciação (R$ 2 mi), pois reduziu o lucro mas não saiu do caixa.<span class="why">É despesa não-caixa: foi descontada na DRE sem que nenhum dinheiro saísse.</span></li>
+        <li class="no">Subtrair a depreciação (R$ 2 mi), pois representa uma saída efetiva de caixa.<span class="why">Falso: a depreciação não movimenta caixa; por isso é somada de volta.</span></li>
+        <li class="no">Ignorar a depreciação, pois ela não tem qualquer efeito sobre o lucro do período.<span class="why">Falso: ela reduz o lucro; só não reduz o caixa — daí o ajuste.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 2 — Recebíveis e estoques</p>
+      <p class="step-q">As contas a receber subiram R$ 6 mi e os estoques R$ 4 mi. Como entram no caixa operacional?</p>
+      <ul class="opts">
+        <li class="ok">Como reduções de caixa (−10 no total), pois vendas e compras prenderam dinheiro no giro.<span class="why">Mais recebíveis = vendas ainda não recebidas; mais estoque = caixa imobilizado.</span></li>
+        <li class="no">Como aumentos de caixa (+10 no total), pois representam mais ativos para a empresa.<span class="why">Falso: crescer ativo de giro consome caixa, não o gera.</span></li>
+        <li class="no">Como neutras ao caixa, pois variações de ativo circulante não afetam o operacional.<span class="why">Falso: o capital de giro é o coração do fluxo operacional.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 3 — Fornecedores e contas a pagar</p>
+      <p class="step-q">Fornecedores subiram R$ 3 mi e contas a pagar R$ 1 mi. Como entram?</p>
+      <ul class="opts">
+        <li class="ok">Como aumentos de caixa (+4 no total), pois adiar pagamentos preserva dinheiro no giro.<span class="why">Comprar a prazo e pagar depois deixa o caixa na empresa por mais tempo.</span></li>
+        <li class="no">Como reduções de caixa (−4 no total), pois a empresa passou a dever mais a terceiros.<span class="why">Falso: dever mais a fornecedores, por ora, preserva caixa, não o reduz.</span></li>
+        <li class="no">Como neutras ao caixa, pois passivos circulantes não afetam o fluxo operacional.<span class="why">Falso: o passivo operacional é parte central do ajuste de giro.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 4 — Resolução: o FCO montado</p>
+      <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:42px"></th><th>Bloco</th><th>Cálculo</th></tr></thead>
+        <tbody>
+          <tr><td class="k">A</td><td>Partida + não-caixa</td><td>Lucro 4 + D&amp;A 2 = 6</td></tr>
+          <tr><td class="k">B</td><td>Variação do giro</td><td>− receb. 6 − estoq. 4 + fornec. 3 + a pagar 1 = −6</td></tr>
+          <tr><td class="k">C</td><td>FCO</td><td>6 − 6 = R$ 0 mi (a operação não gerou caixa!)</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note"><b>Fechamento:</b> o método indireto mostra, <b>ajuste por ajuste</b>, por que o lucro de R$ 4 mi não virou caixa: o giro o absorveu inteiro. Reconstruir o caixa é entender a história por trás do número.</div>
+    </div>
+  </section>
+
+  <!-- ============ CENÁRIO 3 ============ -->
+  <section id="c3">
+    <p class="sec-num">06</p>
+    <div class="scn-head"><h2 style="margin:0">Cenário 3 — Os três fluxos</h2><span class="badge b-int">Intermediário</span></div>
+    <p style="color:var(--ink-soft);margin-top:10px"><em>Conceito-chave: operacional, investimento e financiamento — e como se avalia a capacidade de gerar caixa.</em></p>
+
+    <h4>Contexto</h4>
+    <p>A DFC se divide em três blocos. O aluno classifica movimentos e avalia a saúde da geração de caixa da Aurora (FCO 0, FCI −5, FCF +1).</p>
+
+    <div class="step">
+      <p class="step-label">Etapa 1 — Classificar um movimento</p>
+      <p class="step-q">A compra de um equipamento por R$ 5 mi entra em qual fluxo?</p>
+      <ul class="opts">
+        <li class="ok">No fluxo de investimento, pois é aplicação em ativos de longo prazo da empresa.<span class="why">Capex é o exemplo clássico de saída no fluxo de investimento.</span></li>
+        <li class="no">No fluxo operacional, pois faz parte das atividades do dia a dia da empresa.<span class="why">Comprar um bem durável não é atividade operacional corrente.</span></li>
+        <li class="no">No fluxo de financiamento, pois envolve a saída de recursos para terceiros.<span class="why">Financiamento trata de dívida e capital próprio, não de compra de ativos.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 2 — Classificar outro movimento</p>
+      <p class="step-q">A captação de um empréstimo de R$ 2 mi entra em qual fluxo?</p>
+      <ul class="opts">
+        <li class="ok">No fluxo de financiamento, pois altera as fontes de recursos (dívida) da empresa.<span class="why">Captar e amortizar dívida são movimentos de financiamento.</span></li>
+        <li class="no">No fluxo de investimento, pois traz recursos para aplicar nos ativos da empresa.<span class="why">Investimento é a aplicação em ativos, não a origem do dinheiro.</span></li>
+        <li class="no">No fluxo operacional, pois afeta o caixa disponível para o dia a dia da empresa.<span class="why">Empréstimo é fonte de financiamento, não resultado da operação.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 3 — Capacidade de gerar caixa</p>
+      <p class="step-q">FCO = 0, FCI = −5, FCF = +1. O que isso revela sobre a Aurora neste ano?</p>
+      <ul class="opts">
+        <li class="ok">A operação não se sustentou sozinha; o investimento foi bancado por dívida e por caixa.<span class="why">Com FCO zero, o capex saiu da dívida nova (+2) e do caixa acumulado (−4).</span></li>
+        <li class="no">A operação gerou caixa de sobra, que financiou todo o investimento do período.<span class="why">Falso: o FCO foi zero; não havia sobra operacional para investir.</span></li>
+        <li class="no">A operação foi irrelevante, pois só o fluxo de financiamento move o caixa da empresa.<span class="why">A operação é justamente o fluxo mais importante para a saúde de longo prazo.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 4 — Resolução: a estrutura do caixa da Aurora</p>
+      <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:42px"></th><th>Fluxo</th><th>Valor e leitura</th></tr></thead>
+        <tbody>
+          <tr><td class="k">A</td><td>Operacional (FCO)</td><td>R$ 0 mi — a operação não gerou caixa neste ano</td></tr>
+          <tr><td class="k">B</td><td>Investimento (FCI)</td><td>−R$ 5 mi — capex em imobilizado</td></tr>
+          <tr><td class="k">C</td><td>Financiamento (FCF)</td><td>+R$ 1 mi — captou 2, pagou 1 de dividendos</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note"><b>Fechamento:</b> a saúde de longo prazo está no <b>FCO</b>. Um ano de FCO baixo pode ser crescimento (giro subindo); anos seguidos de FCO fraco são um alerta. A capacidade de gerar caixa mede-se, sobretudo, pela operação.</div>
+    </div>
+  </section>
+
+  <!-- ============ CENÁRIO 4 ============ -->
+  <section id="c4">
+    <p class="sec-num">07</p>
+    <div class="scn-head"><h2 style="margin:0">Cenário 4 — Qualidade do lucro no tempo</h2><span class="badge b-sup">Super Desafio</span></div>
+    <p style="color:var(--ink-soft);margin-top:10px"><em>Conceito-chave: lucro de qualidade é aquele que, ao longo do tempo, converge para o caixa.</em></p>
+
+    <h4>Contexto</h4>
+    <p>Olhar um único ano não basta. O aluno compara lucro e caixa operacional da Aurora ao longo de <strong>três anos</strong> para julgar a qualidade do lucro. <em>(Use a série de três anos da seção do dataset.)</em></p>
+
+    <div class="step">
+      <p class="step-label">Etapa 1 — A métrica de qualidade</p>
+      <p class="step-q">Que relação resume a "qualidade do lucro" pela ótica do caixa?</p>
+      <ul class="opts">
+        <li class="ok">A razão entre o caixa operacional e o lucro: quanto mais perto de 1, melhor a qualidade.<span class="why">Indica quanto do lucro reportado de fato virou dinheiro.</span></li>
+        <li class="no">A razão entre o lucro e a receita do período: quanto maior a margem, melhor a qualidade.<span class="why">Isso é margem — mede rentabilidade, não conversão em caixa.</span></li>
+        <li class="no">A razão entre o caixa final e o caixa inicial: quanto maior, melhor a qualidade.<span class="why">Variação de caixa total mistura investimento e financiamento; não isola o lucro.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 2 — Lendo um ano isolado</p>
+      <p class="step-q">No Ano 2, a Aurora teve lucro 4 e FCO 0 (razão 0). Isso condena a qualidade do lucro?</p>
+      <ul class="opts">
+        <li class="ok">Não necessariamente: pode ser um ano de crescimento que prendeu caixa no giro.<span class="why">Investir em recebíveis e estoque para crescer é normal e tende a reverter.</span></li>
+        <li class="no">Sim, sempre: um único ano com FCO baixo já prova que o lucro é de má qualidade.<span class="why">Um ano isolado não conclui; é preciso ver a tendência.</span></li>
+        <li class="no">Não, jamais: a relação entre lucro e caixa não tem qualquer valor diagnóstico.<span class="why">Tem, e muito; o ponto é interpretá-la ao longo do tempo.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 3 — Lendo a tendência</p>
+      <p class="step-q">Como distinguir um problema temporário de um problema crônico de qualidade?</p>
+      <ul class="opts">
+        <li class="ok">Observando vários anos: se o caixa nunca alcança o lucro, a divergência é crônica.<span class="why">A persistência é o que separa crescimento saudável de lucro inflado.</span></li>
+        <li class="no">Observando um trimestre: a divergência de um período curto já encerra o diagnóstico.<span class="why">Períodos curtos são ruidosos; sazonalidade e giro distorcem.</span></li>
+        <li class="no">Observando só o último ano: o histórico anterior não importa para a qualidade.<span class="why">O histórico é justamente o que revela se a divergência reverte ou não.</span></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="step-label">Etapa 4 — Resolução: três anos da Aurora</p>
+      <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:42px"></th><th>Ano</th><th>Lucro · FCO · razão</th><th style="width:100px"></th></tr></thead>
+        <tbody>
+          <tr><td class="k">A</td><td>Ano 1</td><td>3,6 · 3,4 · 0,94</td><td><span class="pill s">converge</span></td></tr>
+          <tr><td class="k">B</td><td>Ano 2</td><td>4,0 · 0,0 · 0,00</td><td><span class="pill m">divergiu</span></td></tr>
+          <tr><td class="k">C</td><td>Ano 3</td><td>4,4 · 6,0 · 1,36</td><td><span class="pill s">reverteu</span></td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note"><b>Fechamento:</b> nos três anos, o caixa acompanhou o lucro — a divergência do Ano 2 foi temporária (giro de crescimento), e reverteu no Ano 3. <b>Lucro de qualidade converge para o caixa no tempo.</b> Quando isso nunca acontece, desconfie.</div>
+    </div>
+  </section>
+
+  <!-- ============ 8. RESULT PANEL ============ -->
+  <section id="result">
+    <p class="sec-num">08</p>
+    <h2>ResultPanel</h2>
+    <p>Ao concluir um cenário, o painel de resultado exibe:</p>
+    <ul style="padding-left:20px">
+      <li><strong>Score do cenário</strong> (soma das etapas), com selo de desempenho (ex.: "Seguindo o dinheiro", "Analista de caixa").</li>
+      <li><strong>Quadro de resolução</strong> (a tabela A/B/C da Etapa 4), substituindo o diagrama de payoff do exemplo de derivativos.</li>
+      <li><strong>Explicação didática</strong> retomando por que a opção correta de cada etapa é a correta — com os números da DFC-base.</li>
+      <li><strong>Contrafactual</strong>: "E se você tivesse olhado só o lucro?" — mostra a conclusão equivocada sobre a saúde da empresa.</li>
+    </ul>
+    <div class="note"><b>Visual opcional (leve):</b> um <b>gráfico em cascata (waterfall)</b> da DFC — do lucro líquido ao caixa final, passando pelos ajustes e pelos três fluxos — torna a reconstrução do Cenário 2 muito tangível. No Cenário 4, um gráfico de linhas <b>lucro × FCO ao longo de 3 anos</b> mostra a convergência. Pode usar <code>Recharts</code>; não é obrigatório.</div>
+  </section>
+
+  <!-- ============ 9. NAVEGAÇÃO ============ -->
+  <section id="nav">
+    <p class="sec-num">09</p>
+    <h2>Navegação e gamificação <span style="font-size:15px;font-weight:400;color:var(--ink-soft)">(transversais a todos os módulos)</span></h2>
+    <h4>Navegação bidirecional</h4>
+    <ul style="padding-left:20px">
+      <li>Botão "← Etapa anterior" para voltar um passo.</li>
+      <li>Barra de progresso clicável (segmentos concluídos são navegáveis).</li>
+      <li>Ao revisitar uma etapa, um banner mostra a resposta anterior e destaca o botão selecionado.</li>
+      <li>Re-responder descarta as respostas subsequentes e recalcula a pontuação.</li>
+    </ul>
+    <h4>Gamificação</h4>
+    <ul style="padding-left:20px">
+      <li>Pontuação por etapa (correta = máximo; parcial = metade; errada = 0).</li>
+      <li>Barra de progresso com score acumulado dentro do cenário.</li>
+      <li>Score por cenário na tela inicial do módulo.</li>
+      <li>Score total acumulado (todos os cenários do módulo, somável com outros módulos do app).</li>
+    </ul>
+  </section>
+
+  <!-- ============ 10. ESTRUTURA DE DADOS ============ -->
+  <section id="dados">
+    <p class="sec-num">10</p>
+    <h2>Estrutura de dados sugerida</h2>
+    <p>Mesmo modelo dos módulos anteriores, com uma <code>dfc</code> compartilhada e a série de três anos:</p>
+<pre><span class="c">// data/modulo6.ts</span>
+const dfc = {
+  operacional: {
+    lucroLiquido: 4, depreciacao: 2,
+    varReceiveis: -6, varEstoques: -4, varFornecedores: 3, varContasPagar: 1,
+    fco: 0,
+  },
+  investimento: { capex: -5, fci: -5 },
+  financiamento: { captacao: 2, dividendos: -1, fcf: 1 },
+  variacaoCaixa: -4, caixaInicial: 10, caixaFinal: 6,
+};
+
+const serieQualidade = [
+  { ano: 1, lucro: 3.6, fco: 3.4, razao: 0.94 },
+  { ano: 2, lucro: 4.0, fco: 0.0, razao: 0.00 },
+  { ano: 3, lucro: 4.4, fco: 6.0, razao: 1.36 },
+];
+
+<span class="c">// Scenario[], Step[], Option[] reaproveitam os tipos dos módulos 1–5.</span>
+<span class="c">// label das opções: manter paralelismo; renderizar com shuffle.</span></pre>
+    <div class="note"><b>Observação para implementação:</b> a DFC reconcilia a DRE (Módulo 5) e o balanço (Módulo 4) da mesma Aurora. Para um modo "reconstrua você mesmo", apresente as variações do balanço e peça ao aluno montar o FCO, validando contra <code>dfc.operacional.fco</code>. Os waterfalls dos Cenários 2 e 4 podem ser campos <code>interactive?: "dfcWaterfall" | "qualityTrend"</code>.</div>
+  </section>
+
+  <!-- ============ 11. RESUMO ============ -->
+  <section id="resumo" style="border-bottom:none">
+    <p class="sec-num">11</p>
+    <h2>Resumo dos 4 cenários</h2>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:34px">#</th><th>Título</th><th style="width:120px">Dificuldade</th><th>Conceito-chave</th></tr></thead>
+      <tbody>
+        <tr><td class="k">1</td><td>Lucro positivo, caixa negativo</td><td><span class="badge b-int">Intermediário</span></td><td>Competência × caixa; por que o lucro não vira dinheiro</td></tr>
+        <tr><td class="k">2</td><td>Reconstruindo o caixa</td><td><span class="badge b-adv">Avançado</span></td><td>Método indireto: lucro + não-caixa ± variações de giro = FCO</td></tr>
+        <tr><td class="k">3</td><td>Os três fluxos</td><td><span class="badge b-int">Intermediário</span></td><td>Operacional, investimento, financiamento e capacidade de gerar caixa</td></tr>
+        <tr><td class="k">4</td><td>Qualidade do lucro no tempo</td><td><span class="badge b-sup">Super Desafio</span></td><td>Conversão caixa/lucro; divergência temporária × crônica</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <footer class="doc">
+    spec_modulo_6.html · Laboratório de Análise de Demonstrações Financeiras · Aula 6 — DFC
+  </footer>
+
+</div>
+</body>
+</html>
