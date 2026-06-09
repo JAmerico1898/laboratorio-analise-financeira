@@ -5,7 +5,7 @@ export const strings = {
   heroTitle: "Laboratório de Análise de",
   heroTitleAccent: "Demonstrações Financeiras",
   heroSubtitle:
-    "Domine a leitura e interpretação de balanços, DRE e fluxo de caixa por meio de demonstrações reais, indicadores e simulações interativas. Uma plataforma pedagógica de excelência acadêmica para o mercado financeiro.",
+    "Domine a leitura e interpretação de balanços, DRE e fluxo de caixa por meio de demonstrações reais, indicadores e simulações interativas.",
 
   methodologyTitle: "Metodologia de Aprendizado",
   methodStep1Title: "1. Seleção do Módulo",
@@ -25,4 +25,19 @@ export const strings = {
     "© 2026 Laboratório de Análise de Demonstrações Financeiras. Todos os direitos reservados.",
   footerCopyright2: "Prof. José Américo.",
   footerContact: "Dúvidas, Sugestões: Entre em contato",
+
+  backToModules: "Voltar",
+  contactTitle: "Entre em Contato",
+  contactSubtitle:
+    "Envie suas dúvidas, sugestões ou feedback sobre o Laboratório de Análise de Demonstrações Financeiras.",
+  contactName: "Nome (opcional)",
+  contactNamePlaceholder: "Seu nome",
+  contactEmail: "E-mail (opcional)",
+  contactEmailPlaceholder: "seu@email.com",
+  contactMessage: "Mensagem",
+  contactMessagePlaceholder: "Escreva sua mensagem aqui...",
+  contactSubmit: "Enviar Mensagem",
+  contactSending: "Enviando...",
+  contactSent: "Mensagem enviada com sucesso!",
+  contactError: "Erro ao enviar. Tente novamente.",
 } as const;
