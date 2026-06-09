@@ -5,7 +5,7 @@ export const strings = {
   heroTitle: "Laboratório de Análise de",
   heroTitleAccent: "Demonstrações Financeiras",
   heroSubtitle:
-    "Domine a leitura e interpretação de balanços, DRE e fluxo de caixa por meio de demonstrações reais, indicadores e simulações interativas. Uma plataforma pedagógica de excelência acadêmica para o mercado financeiro.",
+    "Domine a leitura e interpretação de balanços, DRE e fluxo de caixa por meio de demonstrações reais, indicadores e simulações interativas.",
 
   methodologyTitle: "Metodologia de Aprendizado",
   methodStep1Title: "1. Seleção do Módulo",
